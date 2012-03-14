@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module version="0.2">
-    <title xml:lang="ko">È÷½ºÅä¸® ¸ðµâ</title>
-    <description xml:lang="ko">XE·Î Á¦ÀÛµÈ ¹®¼­,´ñ±ÛÀÇ ¼öÁ¤ ³»¿ëÀ» ±â·ÏÇÏ°í º¹±¸½ÃÄÑÁÖ´Â ¸ðµâÀÔ´Ï´Ù. </description>
+    <title xml:lang="ko">ížˆìŠ¤í† ë¦¬ ëª¨ë“ˆ</title>
+    <description xml:lang="ko">XEë¡œ ì œìž‘ëœ ë¬¸ì„œ,ëŒ“ê¸€ì˜ ìˆ˜ì • ë‚´ìš©ì„ ê¸°ë¡í•˜ê³  ë³µêµ¬ì‹œì¼œì£¼ëŠ” ëª¨ë“ˆìž…ë‹ˆë‹¤. </description>
     <version>0.1.0.0</version>
     <date>2012-03-14</date>
     <category>accessory</category>
     <author email_address="webmaster@animeclub.net" link="http://www.animeclub.net/">
-        <name xml:lang="ko">¶ó¸£°Ôµ§</name>
+        <name xml:lang="ko">ë¼ë¥´ê²Œë´</name>
     </author>
 	 <author email_address="soonj@nate.com" link="http://backupxe.com/">
         <name xml:lang="ko">Karma</name>
