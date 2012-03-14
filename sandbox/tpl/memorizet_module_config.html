@@ -1,0 +1,27 @@
+﻿<!--%import("filter/insert_memorize_module_config.xml")-->
+<form action="./" method="post" class="form">
+<input type="hidden" name="module" value="memorize" />
+<input type="hidden" name="act" value="procMemorizeInsertModuleConfig" />
+<input type="hidden" name="success_return_url" value="{getRequestUriByServerEnviroment()}" />
+    <input type="hidden" name="target_module_srl" value="{$module_info->module_srl?$module_info->module_srl:$module_srls}" />
+    <h3 class="h3">{$lang->memorize}</h3>
+    <div class="table">
+        <table width="100%" border="1" cellspacing="0">
+            <tr>
+                <th scope="row"><label for="memorize_mode">{$lang->mode_memorize}</label></th>
+                <td class="text">
+                    <select name="memorize_mode" id="memorize_mode">
+                        <option value="" selected="selected"|cond="$document_config->memorize_mode==''">{$lang->notuse}</option>
+                        <option value="All" selected="selected"|cond="$document_config->memorize_mode=='All'">{$lang->use_document_comment}</option>
+                        <option value="Document_only" selected="selected"|cond="$document_config->memorize_mode=='document_only'">{$lang->use_document_only}</option>
+						<option value="comment_only" selected="selected"|cond="$document_config->memorize_mode=='comment_only'">{$lang->use_comment_only}</option>
+                    </select>
+                    <span class="desc">{$lang->about_use_memorize}</span>
+                </td>
+            </tr>
+        </table>
+    </div>
+	<div class="btnArea">
+        <span class="btn"><input type="submit" value="{$lang->cmd_save}"/></span>
+    </div>
+</form>
