@@ -1,0 +1,13 @@
+<table name="memorize_datas">
+	<column name="memory_srl" type="number" size="11" notnull="notnull" primary_key="primary_key" />
+	<column name="type" type="char" size="2" default="0" notnull="notnull" index="idx_type" />
+	<column name="idx" type="number" size="11" default="0" notnull="notnull" index="idx_idx" />
+	<column name="module_srl" type="number" size="11" default="0" notnull="notnull" index="idx_module_srl" />
+	<column name="content_srl" type="number" size="11" default="0" notnull="notnull" index="idx_content_srl" />
+	<column name="parent_srl" type="number" size="11" default="0" notnull="notnull" index="idx_parent_srl" />
+	<column name="content1" type="bigtext" notnull="notnull" />
+	<column name="content2" type="bigtext" notnull="notnull" />
+	<column name="regdate" type="date" index="idx_regdate" />
+	<column name="last_update" type="date" index="idx_last_update" />
+	<column name="extra_vars" type="text" />
+</table>
