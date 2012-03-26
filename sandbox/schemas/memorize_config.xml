@@ -1,0 +1,6 @@
+<table name="memorize_config">
+	<column name="module" type="varchar" size="250" notnull="notnull" />
+	<column name="module_srl" type="number" size="11" default="0" notnull="notnull" index="idx_module_srl" />
+	<column name="config" type="text" />
+	<column name="regdate" type="date" />
+</table>
