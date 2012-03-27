@@ -1,0 +1,45 @@
+<include target="header.html" />
+<form ruleset="insertMemorizeConfig" action="./" method="post" class="form">
+<input type="hidden" name="module" value="memorize" />
+<input type="hidden" name="act" value="procMemorizeAdminConfig" />
+<input type="hidden" name="success_return_url" value="{getRequestUriByServerEnviroment()}" />
+	<h3 class="h3">{$lang->memorize_config}</h3>
+	<p>{$lang->about_memorize_config}</p>
+	<div class="table">
+		<table width="100%" border="1" cellspacing="0">
+			<tr>
+				<th scope="row" colspan="2">{$lang->memorize_page}</th>
+			</tr>
+			<tr>
+				<th scope="row"><label for="use_update_page">{$lang->memorize_use_update_page}</label></th>
+				<td class="text">
+					<p class="a"><input type="checkbox" name="use_update_page" id="use_update_page" value="Y" checked="checked"|cond="$module_info->use_update_page == 'Y'" /> <label for="use_update_page">{$lang->about_memorize_use_update_page}</label></p>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="use_delete_page">{$lang->memorize_use_delete_page}</label></th>
+				<td class="text">
+					<p class="a"><input type="checkbox" name="use_delete_page" id="use_delete_page" value="Y" checked="checked"|cond="$module_info->use_delete_page == 'Y'" /> <label for="use_delete_page">{$lang->about_memorize_use_delete_page}</label></p>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row" colspan="2">{$lang->memorize_layout}</th>
+			</tr>
+			<tr>
+				<th scope="row"><label for="use_update_layout">{$lang->memorize_use_update_layout}</label></th>
+				<td class="text">
+					<p class="a"><input type="checkbox" name="use_update_layout" id="use_update_layout" value="Y" checked="checked"|cond="$module_info->use_update_layout == 'Y'" /> <label for="use_update_layout">{$lang->about_memorize_use_update_layout}</label></p>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="use_delete_layout">{$lang->memorize_use_delete_layout}</label></th>
+				<td class="text">
+					<p class="a"><input type="checkbox" name="use_delete_layout" id="use_delete_layout" value="Y" checked="checked"|cond="$module_info->use_delete_layout == 'Y'" /> <label for="use_delete_layout">{$lang->about_memorize_use_delete_layout}</label></p>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div class="btnArea">
+		<span class="btn"><input type="submit" value="{$lang->cmd_save}"/></span>
+	</div>
+</form>

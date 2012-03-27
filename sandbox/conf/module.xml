@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <module>
-    <grants />
-    <permissions />
+	<grants />
+	<permissions>
+		<permission action="procMemorizeAdminConfig" target="manager" />
+		<permission action="procMemorizeAdminInsertModuleConfig" target="manager" />
+	</permissions>
 	<actions>
-        <action name="procMemorizeInsertModuleConfig" type="controller" standalone="true" />
+		<action name="dispMemorizeAdminIndex" type="view" standalone="true" admin_index="true" />
+		<action name="dispMemorizeAdminList" type="view" standalone="true" />
+		<action name="dispMemorizeAdminLog" type="view" standalone="true" />
+		<action name="procMemorizeAdminConfig" type="controller" standalone="true" />
+		<action name="procMemorizeAdminInsertModuleConfig" type="controller" standalone="true" />
 	</actions>
-    <menus>
-        <menu name="memorize">
-            <title xml:lang="ko">히스토리</title>
-        </menu>
-    </menus>
+	<menus>
+		<menu name="memorize" type="all">
+			<title xml:lang="ko">히스토리</title>
+		</menu>
+	</menus>
 </module>

@@ -1,18 +1,151 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <lang>
-    <item name="memorize">
-        <value xml:lang="ko"><![CDATA[히스토리 기록]]></value>
-    </item>
+	<item name="memorize">
+		<value xml:lang="ko"><![CDATA[히스토리]]></value>
+	</item>
+	<item name="about_memorize">
+		<value xml:lang="ko"><![CDATA[XE로 제작된 문서, 댓글의 수정 내용을 기록하고 복구시켜주는 모듈입니다.]]></value>
+	</item>
+	<item name="memorize_config">
+		<value xml:lang="ko"><![CDATA[설정]]></value>
+	</item>
+	<item name="about_memorize_config">
+		<value xml:lang="ko"><![CDATA[기본 설정입니다.]]></value>
+	</item>
+	<item name="memorize_list">
+		<value xml:lang="ko"><![CDATA[기록]]></value>
+	</item>
+	<item name="memorize_log">
+		<value xml:lang="ko"><![CDATA[로그]]></value>
+	</item>
+	<item name="memorize_page">
+		<value xml:lang="ko"><![CDATA[페이지 기록 남기기]]></value>
+	</item>
+	<item name="about_memorize_page">
+		<value xml:lang="ko"><![CDATA[페이지 설명]]></value>
+	</item>
+	<item name="memorize_use_update_page">
+		<value xml:lang="ko"><![CDATA[페이지 편집]]></value>
+	</item>
+	<item name="about_memorize_use_update_page">
+		<value xml:lang="ko"><![CDATA[위젯형, 문서형에 한하여 페이지 모듈의 위젯 내용 편집 시 내용을 기록합니다.]]></value>
+	</item>
+	<item name="memorize_use_delete_page">
+		<value xml:lang="ko"><![CDATA[페이지 삭제]]></value>
+	</item>
+	<item name="about_memorize_use_delete_page">
+		<value xml:lang="ko"><![CDATA[위젯형, 문서형에 한하여 페이지 모듈을 삭제할 경우 삭제 전 내용을 기록합니다.]]></value>
+	</item>
+	<item name="memorize_layout">
+		<value xml:lang="ko"><![CDATA[레이아웃 기록 남기기]]></value>
+	</item>
+	<item name="about_memorize_layout">
+		<value xml:lang="ko"><![CDATA[레이아웃 설명]]></value>
+	</item>
+	<item name="memorize_use_update_layout">
+		<value xml:lang="ko"><![CDATA[레이아웃 편집]]></value>
+	</item>
+	<item name="about_memorize_use_update_layout">
+		<value xml:lang="ko"><![CDATA[레이아웃 모듈의 내용 편집 시 내용을 기록합니다.]]></value>
+	</item>
+	<item name="memorize_use_delete_layout">
+		<value xml:lang="ko"><![CDATA[레이아웃 삭제]]></value>
+	</item>
+	<item name="about_memorize_use_delete_layout">
+		<value xml:lang="ko"><![CDATA[레이아웃 모듈을 삭제할 경우 삭제 전 내용을 기록합니다.]]></value>
+	</item>
+	<item name="memorize_document">
+		<value xml:lang="ko"><![CDATA[글 기록 남기기]]></value>
+	</item>
+	<item name="about_memorize_document">
+		<value xml:lang="ko"><![CDATA[글 설명]]></value>
+	</item>
+	<item name="memorize_use_update_document">
+		<value xml:lang="ko"><![CDATA[글 수정]]></value>
+	</item>
+	<item name="about_memorize_use_update_document">
+		<value xml:lang="ko"><![CDATA[글을 수정할 경우 수정 전의 내용을 기록합니다.]]></value>
+	</item>
+	<item name="memorize_use_delete_document">
+		<value xml:lang="ko"><![CDATA[글 삭제]]></value>
+	</item>
+	<item name="about_memorize_use_delete_document">
+		<value xml:lang="ko"><![CDATA[글을 삭제할 경우 내용을 기록합니다.]]></value>
+	</item>
+	<item name="memorize_comment">
+		<value xml:lang="ko"><![CDATA[댓글 기록 남기기]]></value>
+	</item>
+	<item name="about_memorize_comment">
+		<value xml:lang="ko"><![CDATA[댓글 설명]]></value>
+	</item>
+	<item name="memorize_use_update_comment">
+		<value xml:lang="ko"><![CDATA[댓글 수정]]></value>
+	</item>
+	<item name="about_memorize_use_update_comment">
+		<value xml:lang="ko"><![CDATA[댓글을 수정할 경우 수정 전의 내용을 기록합니다.]]></value>
+	</item>
+	<item name="memorize_use_delete_comment">
+		<value xml:lang="ko"><![CDATA[댓글 삭제]]></value>
+	</item>
+	<item name="about_memorize_use_delete_comment">
+		<value xml:lang="ko"><![CDATA[댓글을 삭제할 경우 내용을 기록합니다.]]></value>
+	</item>
+	<item name="memorize_file">
+		<value xml:lang="ko"><![CDATA[첨부파일 남기기]]></value>
+	</item>
+	<item name="about_memorize_file">
+		<value xml:lang="ko"><![CDATA[첨부파일 설명]]></value>
+	</item>
+	<item name="memorize_use_delete_file">
+		<value xml:lang="ko"><![CDATA[첨부파일 삭제]]></value>
+	</item>
+	<item name="about_memorize_use_delete_file">
+		<value xml:lang="ko"><![CDATA[첨부파일을 삭제할 경우 파일을 백업합니다.]]></value>
+	</item>
+	<item name="memorize_etc">
+		<value xml:lang="ko"><![CDATA[그외 설정]]></value>
+	</item>
+	<item name="memorize_use_message">
+		<value xml:lang="ko"><![CDATA[쪽지보내기]]></value>
+	</item>
+	<item name="about_memorize_use_message">
+		<value xml:lang="ko"><![CDATA[다른사람으로 인해 복구가 가해질때 쪽지를 보냅니다.]]></value>
+	</item>
+	<item name="memorize_use_email">
+		<value xml:lang="ko"><![CDATA[이메일보내기]]></value>
+	</item>
+	<item name="about_memorize_use_email">
+		<value xml:lang="ko"><![CDATA[다른사람으로 인해 복구가 가해질때 이메일를 보냅니다.]]></value>
+	</item>
+	<item name="memorize_block_del_document">
+		<value xml:lang="ko"><![CDATA[문서 삭제 금지]]></value>
+	</item>
+	<item name="about_memorize_block_del_document">
+		<value xml:lang="ko"><![CDATA[다른사람이 작성한 댓글이 존재하면 글을 삭제하지 못하게 합니다.]]></value>
+	</item>
+	<item name="memorize_block_del_comment">
+		<value xml:lang="ko"><![CDATA[댓글 삭제 금지]]></value>
+	</item>
+	<item name="about_memorize_block_del_comment">
+		<value xml:lang="ko"><![CDATA[다른사람이 작성한 자식의 댓글이 존재하면 댓글을 삭제하지 못하게 합니다.]]></value>
+	</item>
+	<item name="memorize_use_autosave">
+		<value xml:lang="ko"><![CDATA[문서보존]]></value>
+	</item>
+	<item name="about_memorize_use_autosave">
+		<value xml:lang="ko"><![CDATA[부모가 삭제될 경우 자식에 해당하는 댓글, 그리고 해당 글안에 존재하는 첨부파일은 모두 기록합니다.]]></value>
+	</item>
+
 	<item name="mode_memorize">
-        <value xml:lang="ko"><![CDATA[히스토리기능 사용]]></value>
-    </item>
+		<value xml:lang="ko"><![CDATA[히스토리기능 사용]]></value>
+	</item>
 	<item name="use_document_comment">
-        <value xml:lang="ko"><![CDATA[본문과 댓글]]></value>
-    </item>
+		<value xml:lang="ko"><![CDATA[본문과 댓글]]></value>
+	</item>
 	<item name="use_document_only">
-        <value xml:lang="ko"><![CDATA[본문만 사용]]></value>
-    </item>
+		<value xml:lang="ko"><![CDATA[본문만 사용]]></value>
+	</item>
 	<item name="use_comment_only">
-        <value xml:lang="ko"><![CDATA[댓글만 사용]]></value>
-    </item>
+		<value xml:lang="ko"><![CDATA[댓글만 사용]]></value>
+	</item>
 </lang>

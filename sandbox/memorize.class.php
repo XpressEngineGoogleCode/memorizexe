@@ -9,8 +9,8 @@
 	{
 
 		/**
-		* @brief 설치시 추가 작업이 필요할시 구현
-		**/
+		  * @brief 설치시 추가 작업이 필요할시 구현
+		 **/
 		function moduleInstall()
 		{
 			$oModuleController = &getController('module');
@@ -41,8 +41,8 @@
 		}
 
 		/**
-		* @brief 모듈 삭제 실행
-		**/
+		 * @brief 모듈 삭제 실행
+		 **/
 		function moduleUninstall()
 		{
 			$oModuleModel = &getModel('module');
@@ -93,7 +93,7 @@
 
 		/**
 		 * @brief 캐시 파일 재생성
-		**/
+		 **/
 		function recompileCache()
 		{
 		}
