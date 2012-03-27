@@ -1,0 +1,11 @@
+<h3 class="xeAdmin">{$lang->memorize} <span class="gray">{$lang->cmd_management}</span></h3>
+
+<div class="infoText">{$lang->memorize_about}</div>
+
+<div class="tab_menu">
+	<ul class="localNavigation">
+		<li class="on"|cond="$act=='dispMemorizeAdminIndex'"><a href="{getUrl('','module','admin','act','dispMemorizeAdminIndex')}">{$lang->memorize_config}</a></li>
+		<li class="on"|cond="$act=='dispMemorizeAdminList'"><a href="{getUrl('','module','admin','act','dispMemorizeAdminList')}">{$lang->memorize_list}</a></li>
+		<li class="on"|cond="$act=='dispMemorizeAdminLog'"><a href="{getUrl('','module','admin','act','dispMemorizeAdminLog')}">{$lang->memorize_log}</a></li>
+	</ul>
+</div>

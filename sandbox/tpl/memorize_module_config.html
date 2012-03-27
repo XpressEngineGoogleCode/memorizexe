@@ -1,0 +1,87 @@
+<form ruleset="insertMemorizeModuleConfig" action="./" method="post" class="form">
+<input type="hidden" name="module" value="memorize" />
+<input type="hidden" name="act" value="procMemorizeAdminInsertModuleConfig" />
+<input type="hidden" name="success_return_url" value="{getRequestUriByServerEnviroment()}" />
+<input type="hidden" name="target_module_srl" value="{$module_srl}" />
+	<h3 class="h3">{$lang->memorize} {$lang->memorize_config}</h3>
+	<p>{$lang->memorize} {$lang->about_memorize_config}</p>
+	<div class="table">
+		<table width="100%" border="1" cellspacing="0">
+			<tr>
+				<th scope="row" colspan="2">{$lang->memorize_document}</th>
+			</tr>
+			<tr>
+				<th scope="row"><label for="memorize_use_update_document">{$lang->memorize_use_update_document}</label></th>
+				<td class="text">
+					<p class="a"><input type="checkbox" name="memorize_use_update_document" id="memorize_use_update_document" value="Y" checked="checked"|cond="$module_config->use_update_document == 'Y'" /> <label for="memorize_use_update_document">{$lang->about_memorize_use_update_document}</label></p>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="memorize_use_delete_document">{$lang->memorize_use_delete_document}</label></th>
+				<td class="text">
+					<p class="a"><input type="checkbox" name="memorize_use_delete_document" id="memorize_use_delete_document" value="Y" checked="checked"|cond="$module_config->use_delete_document == 'Y'" /> <label for="memorize_use_delete_document">{$lang->about_memorize_use_delete_document}</label></p>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row" colspan="2">{$lang->memorize_comment}</th>
+			</tr>
+			<tr>
+				<th scope="row"><label for="memorize_use_update_comment">{$lang->memorize_use_update_comment}</label></th>
+				<td class="text">
+					<p class="a"><input type="checkbox" name="memorize_use_update_comment" id="memorize_use_update_comment" value="Y" checked="checked"|cond="$module_config->use_update_comment == 'Y'" /> <label for="memorize_use_update_comment">{$lang->about_memorize_use_update_comment}</label></p>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="memorize_use_delete_comment">{$lang->memorize_use_delete_comment}</label></th>
+				<td class="text">
+					<p class="a"><input type="checkbox" name="memorize_use_delete_comment" id="memorize_use_delete_comment" value="Y" checked="checked"|cond="$module_config->use_delete_comment == 'Y'" /> <label for="memorize_use_delete_comment">{$lang->about_memorize_use_delete_comment}</label></p>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row" colspan="2">{$lang->memorize_file}</th>
+			</tr>
+			<tr>
+				<th scope="row"><label for="memorize_use_delete_file">{$lang->memorize_use_delete_file}</label></th>
+				<td class="text">
+					<p class="a"><input type="checkbox" name="memorize_use_delete_file" id="memorize_use_delete_file" value="Y" checked="checked"|cond="$module_config->use_delete_file == 'Y'" /> <label for="memorize_use_delete_file">{$lang->about_memorize_use_delete_file}</label></p>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row" colspan="2">{$lang->memorize_etc}</th>
+			</tr>
+			<tr>
+				<th scope="row"><label for="memorize_use_message">{$lang->memorize_use_message}</label></th>
+				<td class="text">
+					<p class="a"><input type="checkbox" name="memorize_use_message" id="memorize_use_message" value="Y" checked="checked"|cond="$module_config->use_message == 'Y'" /> <label for="memorize_use_message">{$lang->about_memorize_use_message}</label></p>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="memorize_use_email">{$lang->memorize_use_email}</label></th>
+				<td class="text">
+					<p class="a"><input type="checkbox" name="memorize_use_email" id="memorize_use_email" value="Y" checked="checked"|cond="$module_config->use_email == 'Y'" /> <label for="memorize_use_email">{$lang->about_memorize_use_email}</label></p>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="memorize_block_del_document">{$lang->memorize_block_del_document}</label></th>
+				<td class="text">
+					<p class="a"><input type="checkbox" name="memorize_block_del_document" id="memorize_block_del_document" value="Y" checked="checked"|cond="$module_config->block_del_document == 'Y'" /> <label for="memorize_block_del_document">{$lang->about_memorize_block_del_document}</label></p>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="memorize_block_del_comment">{$lang->memorize_block_del_comment}</label></th>
+				<td class="text">
+					<p class="a"><input type="checkbox" name="memorize_block_del_comment" id="memorize_block_del_comment" value="Y" checked="checked"|cond="$module_config->block_del_comment == 'Y'" /> <label for="memorize_block_del_comment">{$lang->about_memorize_block_del_comment}</label></p>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="memorize_use_autosave">{$lang->memorize_use_autosave}</label></th>
+				<td class="text">
+					<p class="a"><input type="checkbox" name="memorize_use_autosave" id="memorize_use_autosave" value="Y" checked="checked"|cond="$module_config->use_autosave == 'Y'" /> <label for="memorize_use_autosave">{$lang->about_memorize_use_autosave}</label></p>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div class="btnArea">
+		<span class="btn"><input type="submit" value="{$lang->cmd_save}"/></span>
+	</div>
+</form>

@@ -1,4 +1,4 @@
-﻿<filter name="insert_memorize_module_config" module="memorize" act="procMemorizeInsertModuleConfig" confirm_msg_code="confirm_submit">
+﻿<filter name="insert_module_config" module="memorize" act="procMemorizeInsertModuleConfig" confirm_msg_code="confirm_submit">
     <form />
     <response>
         <tag name="error" />
