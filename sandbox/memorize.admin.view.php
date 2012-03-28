@@ -14,7 +14,8 @@
 		function init()
 		{
 			// 템플릿 경로 지정
-			$this->setTemplatePath($this->module_path.'tpl');
+			$this->setTemplatePath($this->module_path.'tpl');$oModuleModel = &getModel('module');
+			$this->module_info = $oModuleModel->getModuleConfig('memorize');
 		}
 
 		/**
@@ -22,6 +23,7 @@
 		 **/
 		function dispMemorizeAdminIndex()
 		{
+			Context::set('module_info',$this->module_info);
 			$this->setTemplateFile('index');
 		}
 

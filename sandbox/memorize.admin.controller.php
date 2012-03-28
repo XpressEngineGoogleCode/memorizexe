@@ -20,6 +20,10 @@
 		 **/
 		function procMemorizeAdminConfig()
 		{
+			$oModuleController = &getController('module');
+			$config = Context::gets('use_update_page','use_delete_page','use_update_layout','use_delete_layout');
+			
+			$oModuleController->insertModuleConfig('memorize', $config);
 			$this->setMessage("success_saved");
 
 			if(Context::get('success_return_url'))
