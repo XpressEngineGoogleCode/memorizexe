@@ -1,9 +1,9 @@
 <query id="deleteMemorizeConfig" action="delete">
-    <tables>
-        <table name="memorize_config" />
-    </tables>
-    <conditions>
-        <condition operation="equal" column="module" var="module" notnull="notnull" />
-        <condition operation="equal" column="module_srl" var="module_srl" notnull="notnull" pipe="and" />
-    </conditions>
+	<tables>
+		<table name="memorize_config" />
+	</tables>
+	<conditions>
+		<condition operation="equal" column="module" var="module" notnull="notnull" pipe="where" />
+		<condition operation="equal" column="module_srl" var="module_srl" filter="number" notnull="notnull" pipe="and" />
+	</conditions>
 </query>

@@ -97,6 +97,104 @@
 		function recompileCache()
 		{
 		}
+
+		/**
+		 * @brief Set the memorize cache
+		 **/
+		function setMemorizeCache($name = 'object_memorize', $args = NULL, $cache = NULL)
+		{
+			if($args == NULL)
+			{
+				return false;
+			}
+
+			// cache controll
+			$oCacheHandler = &CacheHandler::getInstance('object');
+
+			// insert in cache
+			if($oCacheHandler->isSupport())
+			{
+				$keys = '';
+				foreach($args as $val)
+				{
+					$keys .= "_{$val}";
+				}
+
+				$cache_key = "{$name}:{$keys}";
+				$oCacheHandler->put($cache_key, $cache);
+			}
+		}
+
+		/**
+		 * @brief Return the memorize cache
+		 **/
+		function getMemorizeCache($name = 'object_memorize', $args = NULL)
+		{
+			if($args == NULL)
+			{
+				return false;
+			}
+
+			// cache controll
+			$oCacheHandler = &CacheHandler::getInstance('object');
+			if($oCacheHandler->isSupport())
+			{
+				$keys = '';
+				$cache_globals = $GLOBALS["__{$name}__"];
+				foreach($args as $val)
+				{
+					$keys .= "_{$val}";
+					$cache_globals = $cache_globals[$val];
+				}
+
+				$cache_key = "{$name}:{$keys}";
+				$cache = $oCacheHandler->get($cache_key);
+			}
+
+			if($cache)
+			{
+				$oCache = $cache;
+			}
+			elseif($cache_globals)
+			{
+				$oCache = $cache_globals;
+			}
+
+			if($oCache)
+			{
+				return $oCache;
+			}
+
+			return false;
+		}
+
+		/**
+		 * @brief Delete the memorize cache
+		 **/
+		function deleteMemorizeCache($name = 'object_memorize', $args = NULL)
+		{
+			if($args == NULL)
+			{
+				return false;
+			}
+
+			// cache
+			$oCacheHandler = &CacheHandler::getInstance('object');
+			if($oCacheHandler->isSupport())
+			{
+				$keys = '';
+				$cache_globals = $GLOBALS["__{$name}__"];
+
+				foreach($args as $val)
+				{
+					$keys .= "_{$val}";
+					$cache_globals = $cache_globals[$val];
+				}
+
+				$cache_key = "{$name}:{$keys}";
+				$oCacheHandler->delete($cache_key);
+			}
+		}
 	}
 /* End of file memorize.class.php */
 /* Location: ./modules/memorize/memorize.class.php */
