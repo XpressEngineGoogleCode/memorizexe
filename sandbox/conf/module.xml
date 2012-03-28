@@ -11,6 +11,13 @@
 		<action name="dispMemorizeAdminLog" type="view" standalone="true" />
 		<action name="procMemorizeAdminConfig" type="controller" standalone="true" />
 		<action name="procMemorizeAdminInsertModuleConfig" type="controller" standalone="true" />
+		<action name="triggerDeleteModule" type="controller" standalone="true" />
+		<action name="triggerUpdateDocument" type="controller" standalone="true" />
+		<action name="triggerDeleteDocument" type="controller" standalone="true" />
+		<action name="triggerUpdateComment" type="controller" standalone="true" />
+		<action name="triggerDeleteComment" type="controller" standalone="true" />
+		<action name="triggerDeleteFile" type="controller" standalone="true" />
+		<action name="triggerDisplay" type="controller" standalone="true" />
 	</actions>
 	<menus>
 		<menu name="memorize" type="all">

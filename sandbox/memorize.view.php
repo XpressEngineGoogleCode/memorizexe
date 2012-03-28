@@ -1,8 +1,8 @@
 <?php
 	/**
-	 * @class  memorizeAdminController
+	 * @class  memorizeView
 	 * @author 라르게덴, 카르마
-	 * @brief Controller class of the module memorize
+	 * @brief View class of the module memorize
 	 **/
 
 	class memorizeView extends memorize
@@ -23,7 +23,7 @@
 		{
 			$current_module_srl = Context::get('module_srl');
 			//$current_module = Context::get('module');
-			$current_module = 'memorize';
+			$current_module = 'board';
 /*
 			if(!$current_module_srl && !$current_module_srls)
 			{
