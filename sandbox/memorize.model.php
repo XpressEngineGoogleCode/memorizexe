@@ -21,9 +21,9 @@
 		function getMemorizeConfig($module = 'board', $module_srl = 0)
 		{
 			// cache를 불러옵니다.
-			if($oCache = $this->getMemorizeCache('object_memorize_config', array($module, $module_srl)))
+			if($cache = $this->getMemorizeCache('object_memorize_config', array($module, $module_srl)))
 			{
-				return $oCache;
+				return $cache;
 			}
 
 			$args->module = $module;

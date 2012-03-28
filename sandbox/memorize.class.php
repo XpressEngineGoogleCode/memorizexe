@@ -153,16 +153,11 @@
 
 			if($cache)
 			{
-				$oCache = $cache;
+				return $cache;
 			}
 			elseif($cache_globals)
 			{
-				$oCache = $cache_globals;
-			}
-
-			if($oCache)
-			{
-				return $oCache;
+				return $cache_globals;
 			}
 
 			return false;
