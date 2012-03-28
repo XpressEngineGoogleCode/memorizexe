@@ -122,7 +122,11 @@
 
 				$cache_key = "{$name}:{$keys}";
 				$oCacheHandler->put($cache_key, $cache);
+
+				return true;
 			}
+
+			return false;
 		}
 
 		/**
