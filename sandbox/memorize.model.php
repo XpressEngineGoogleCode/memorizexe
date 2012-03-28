@@ -37,8 +37,10 @@
 			$config = unserialize($output->data->config);
 
 			// cache를 저장합니다.
-			$this->setMemorizeCache('object_memorize_config', array($module, $module_srl), $config);
-			$GLOBALS['__object_memorize_config__'][$module][$module_srl] = $config;
+			if($this->setMemorizeCache('object_memorize_config', array($module, $module_srl), $config))
+			{
+				$GLOBALS['__object_memorize_config__'][$module][$module_srl] = $config;
+			}
 
 			return $config;
 		}
