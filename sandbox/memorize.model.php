@@ -37,7 +37,7 @@
 			$config = unserialize($output->data->config);
 
 			// cache를 저장합니다.
-			if($this->setMemorizeCache('object_memorize_config', array($module, $module_srl), $config))
+			if(!$this->setMemorizeCache('object_memorize_config', array($module, $module_srl), $config))
 			{
 				$GLOBALS['__object_memorize_config__'][$module][$module_srl] = $config;
 			}
@@ -45,9 +45,24 @@
 			return $config;
 		}
 
-		function insertMemorizeDatas($args)
+		/**
+		 * @brief 마지막 글의 idx
+		 **/
+		function getMemorizeLastIdx($content_srl = NULL)
 		{
-//			return TRUE;
+			if($content_srl == NULL)
+			{
+				return false;
+			}
+
+			$args->content_srl = $content_srl;
+			$output = executeQuery('memorize.getMemorizeLastIdx', $args);
+			if(!$output->toBool())
+			{
+				return new Object(-1, "msg_error_occured");
+			}
+
+			return $output->data->idx;
 		}
 	}
 /* End of file memorize.model.php */

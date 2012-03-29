@@ -1,0 +1,18 @@
+<query id="insertMemorizeDatas" action="insert">
+	<tables>
+		<table name="memorize_datas" />
+	</tables>
+	<columns>
+		<column name="memory_srl" var="memory_srl" filter="number" notnull="notnull" />
+		<column name="type" var="type" filter="number" notnull="notnull" />
+		<column name="idx" var="idx" filter="number" notnull="notnull" />
+		<column name="module_srl" var="module_srl" filter="number" notnull="notnull" />
+		<column name="content_srl" var="content_srl" filter="number" notnull="notnull" />
+		<column name="parent_srl" var="parent_srl" filter="number" notnull="notnull" />
+		<column name="content1" var="content1" />
+		<column name="content2" var="content2" />
+		<column name="regdate" var="regdate" default="curdate()" />
+		<column name="last_update" var="last_update" default="curdate()" />
+		<column name="extra_vars" var="extra_vars" />
+	</columns>
+</query>

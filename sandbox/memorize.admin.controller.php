@@ -28,8 +28,8 @@
 			$config_layout->use_update_layout = $obj->use_update_layout?$obj->use_update_layout:'N';
 			$config_layout->use_delete_layout = $obj->use_delete_layout?$obj->use_delete_layout:'N';
 
-			$output = $this->insertMemorizeConfig('page', 0, $config_page);
-			$output = $this->insertMemorizeConfig('layout', 0, $config_layout);
+			$this->insertMemorizeConfig('page', 0, $config_page);
+			$this->insertMemorizeConfig('layout', 0, $config_layout);
 
 			$this->setMessage("success_saved");
 
@@ -52,7 +52,7 @@
 
 			$config = NULL;
 			$obj = Context::getRequestVars();
-			//$obj = Context::gets('memorize_use_update_document','memorize_use_delete_document','memorize_use_update_comment','memorize_use_delete_comment','memorize_use_delete_file','memorize_use_message','memorize_use_email','memorize_block_del_document','memorize_block_del_comment','memorize_use_autosave');
+
 			$config->use_update_document = $obj->memorize_use_update_document?$obj->memorize_use_update_document:'N';
 			$config->use_delete_document = $obj->memorize_use_delete_document?$obj->memorize_use_delete_document:'N';
 			$config->use_update_comment = $obj->memorize_use_update_comment?$obj->memorize_use_update_comment:'N';
@@ -63,7 +63,8 @@
 			$config->block_del_document = $obj->memorize_block_del_document?$obj->memorize_block_del_document:'N';
 			$config->block_del_comment = $obj->memorize_block_del_comment?$obj->memorize_block_del_comment:'N';
 			$config->use_autosave = $obj->memorize_use_autosave?$obj->memorize_use_autosave:'N';
-			$output = $this->insertMemorizeConfig('board', $module_srl, $config);
+
+			$this->insertMemorizeConfig('board', $module_srl, $config);
 
 			$this->setMessage("success_saved");
 
@@ -77,6 +78,9 @@
 			}
 		}
 
+		/**
+		 * @brief 설정 추가
+		 **/
 		function insertMemorizeConfig($module = 'board', $module_srl = 0, $config = NULL) {
 			$args->module = $module;
 			$args->module_srl = $module_srl;
