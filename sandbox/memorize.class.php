@@ -111,7 +111,7 @@
 			// cache controll
 			$oCacheHandler = &CacheHandler::getInstance('object');
 
-			// insert in cache
+			// cache
 			if($oCacheHandler->isSupport())
 			{
 				$keys = '';
@@ -120,6 +120,7 @@
 					$keys .= "_{$val}";
 				}
 
+				// object_memorize:_board_234324 와 같은 키 이름을 구합니다.
 				$cache_key = "{$name}:{$keys}";
 				$oCacheHandler->put($cache_key, $cache);
 
@@ -141,27 +142,38 @@
 
 			// cache controll
 			$oCacheHandler = &CacheHandler::getInstance('object');
+
+			// cache
 			if($oCacheHandler->isSupport())
 			{
 				$keys = '';
-				$cache_globals = $GLOBALS["__{$name}__"];
 				foreach($args as $val)
 				{
 					$keys .= "_{$val}";
+				}
+
+				// object_memorize:_board_234324 와 같은 키 이름을 구합니다.
+				$cache_key = "{$name}:{$keys}";
+				$cache = $oCacheHandler->get($cache_key);
+
+				if($cache)
+				{
+					return $cache;
+				}
+			}
+			else
+			{
+				// cache를 사용하지 않는다면 $GLOBALS에서 구합니다.
+				$cache_globals = $GLOBALS["__{$name}__"];
+				foreach($args as $val)
+				{
 					$cache_globals = $cache_globals[$val];
 				}
 
-				$cache_key = "{$name}:{$keys}";
-				$cache = $oCacheHandler->get($cache_key);
-			}
-
-			if($cache)
-			{
-				return $cache;
-			}
-			elseif($cache_globals)
-			{
-				return $cache_globals;
+				if($cache_globals)
+				{
+					return $cache_globals;
+				}
 			}
 
 			return false;
@@ -177,17 +189,16 @@
 				return false;
 			}
 
-			// cache
+			// cache controll
 			$oCacheHandler = &CacheHandler::getInstance('object');
+
+			// cache
 			if($oCacheHandler->isSupport())
 			{
 				$keys = '';
-				$cache_globals = $GLOBALS["__{$name}__"];
-
 				foreach($args as $val)
 				{
 					$keys .= "_{$val}";
-					$cache_globals = $cache_globals[$val];
 				}
 
 				$cache_key = "{$name}:{$keys}";

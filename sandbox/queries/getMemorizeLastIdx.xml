@@ -1,0 +1,15 @@
+<query id="getMemorizeLastIdx" action="select">
+	<tables>
+		<table name="memorize_datas" />
+	</tables>
+	<columns>
+		<column name="idx" />
+	</columns>
+	<conditions>
+		<condition operation="equal" column="content_srl" var="content_srl" filter="number" notnull="notnull" pipe="where" />
+	</conditions>
+	<navigation>
+		<index var="sort_index" default="idx" order="asc" />
+		<list_count var="list_count" default="1" />
+	</navigation>
+</query>
