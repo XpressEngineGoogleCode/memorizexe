@@ -44,6 +44,11 @@
 
 			return $config;
 		}
+
+		function insertMemorizeDatas($args)
+		{
+//			return TRUE;
+		}
 	}
 /* End of file memorize.model.php */
 /* Location: ./modules/memorize/memorize.model.php */
