@@ -2,6 +2,7 @@
 	<column name="log_srl" type="number" size="11" notnull="notnull" primary_key="primary_key" auto_increment="auto_increment" />
 	<column name="code" type="char" size="1" default="0" notnull="notnull" index="idx_code" />
 	<column name="module_srl" type="number" size="11" default="0" notnull="notnull" index="idx_module_srl" />
+	<column name="memory_srl" type="number" size="11" default="0" notnull="notnull" index="idx_memory_srl" />
 	<column name="content_srl" type="number" size="11" default="0" notnull="notnull" index="idx_content_srl" />
 	<column name="member_srl" type="number" size="11" default="0" notnull="notnull" index="idx_member_srl" />
 	<column name="diff_column" type="text" />
