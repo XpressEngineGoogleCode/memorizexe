@@ -123,12 +123,13 @@
 			$oDocument = $oDocumentModel->getDocument($document_srl, FALSE, FALSE);
 			$oldDocument = $oDocument->variables;
 
+
 			// 비교 결과 차이가 있다면 $is_diff를 TRUE로 바꿈
 			$is_diff = FALSE;
 			foreach($oldDocument as $key => $val)
 			{
 				// 비교 대상이 되는 컬럼 값
-				if(!in_array($key, array('content', 'title', 'allow_trackback', 'status', 'is_notice', 'commentStatus', 'ipaddress', 'category_srl', 'commentStatus', 'homepage', 'notify_message', 'password')))
+				if(!in_array($key, $this->getVersionDocument()))
 				{
 					continue;
 				}
@@ -266,6 +267,16 @@
 		function triggerDisplay(&$obj)
 		{
 		}
+
+		function getVersionDocument()
+		{
+			if(version_compare(__XE_VErsion__, '1.5.0', '>=')) 
+			{
+				return array('content', 'title', 'allow_trackback', 'status', 'is_notice', 'commentStatus', 'ipaddress', 'category_srl', 'commentStatus', 'homepage', 'notify_message', 'password');
+			}
+			return array('lang_code','is_notice','title','content','password','email_address','homepage','tags','extra_vars','ipaddress','allow_trackback','nofity_message','is_secret','allow_comment','lock_comment','nick_name');
+		}
+
 	}
 /* End of file memorize.controller.php */
 /* Location: ./modules/memorize/memorize.controller.php */
