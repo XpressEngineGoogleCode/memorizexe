@@ -301,6 +301,12 @@
 				return new Object(-1, "msg_error_occured");
 			}
 
+			// 회원이면 member_srl을 추가...
+			if($logged_info = Context::get('logged_info'))
+			{
+				$args->member_srl = $logged_info->member_srl;
+			}
+
 			// begin transaction
 			$oDB = &DB::getInstance();
 			$oDB->begin();
