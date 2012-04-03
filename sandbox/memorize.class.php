@@ -8,6 +8,8 @@
 	class memorize extends ModuleObject 
 	{
 
+		var $memorize_type = array('document'=> '01', 'comment'=> '02', 'extra_vars'=> '03', 'lang'=> '04', 'file'=> '05', 'page'=> '06', 'layout'=> '07', 'member'=> '08' );
+		
 		/**
 		  * @brief 설치시 추가 작업이 필요할시 구현
 		 **/
