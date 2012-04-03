@@ -43,6 +43,9 @@
 			// 비교결과를 담는다.
 			$is_diff = NULL;
 
+			// 기록할 확장변수의 정보를 담는다. 
+			$args_diff = NULL;
+
 			// 넘어온 값을 우선 배열에 담는다.
 			$args = $obj;
 
@@ -181,42 +184,34 @@
 					// 언어별 타이틀을 비교하여 결과가 다르다면 해당 컬럼을 배열에 담고 해당 내용을 기록
 					if($val->var_idx == -1 && $val->value != $obj->title)
 					{
+						$is_diff->extra_var_title = TRUE;
+
 						// type의 글 수정에 대한 수행번호를 선언(언어별 확장변수)
 						$args_extra_lang->type = $this->memorize_type['lang'];
-						$args_extra_lang->idx = $oMemorizeModel->getMemorizeLastIdx($document_srl);
-						$args_extra_lang->module_srl = $module_srl;
-						$args_extra_lang->content_srl = $document_srl;
-						$args_extra_lang->parent_srl = $document_srl;
 						$args_extra_lang->content1 = $val->value;
 						$args_extra_lang->content2 = $val->var_idx;
 						// extra_vars는 데이터 타입이 text이기 때문에 bigtext 타입의 컬럼은 제거 합니다.
 						unset($val->value);
 						$args_extra_lang->extra_vars = serialize($val);
-						// 수정시 기존에 등록되었던 확장변수 값을 기록 합니다.
-						$this->insertMemorizeDatas($args_extra_lang);
+
+						$args_diff->extra_var_title = $args_extra_lang;
 						unset($args_extra_lang);
-						
-						$is_diff->extra_var_title = TRUE;
 					}
 					// 언어별 본문을 비교하여 결과가 다르다면 해당 컬럼을 배열에 담고 해당 내용을 기록
 					elseif($val->var_idx == -2 && $val->value != $obj->content)
 					{
+						$is_diff->extra_var_content = TRUE;
+
 						// type의 글 수정에 대한 수행번호를 선언
 						$args_extra_lang->type = $this->memorize_type['lang'];
-						$args_extra_lang->idx = $oMemorizeModel->getMemorizeLastIdx($document_srl);
-						$args_extra_lang->module_srl = $module_srl;
-						$args_extra_lang->content_srl = $document_srl;
-						$args_extra_lang->parent_srl = $document_srl;
 						$args_extra_lang->content1 = $val->value;
 						$args_extra_lang->content2 = $val->var_idx;
 						// extra_vars는 데이터 타입이 text이기 때문에 bigtext 타입의 컬럼은 제거 합니다.
 						unset($val->value);
 						$args_extra_lang->extra_vars = serialize($val);
-						// 수정시 기존에 등록되었던 확장변수 값을 기록 합니다.
-						$this->insertMemorizeDatas($args_extra_lang);
+
+						$args_diff->extra_var_content = $args_extra_lang;
 						unset($args_extra_lang);
-						
-						$is_diff->extra_var_content = TRUE;
 					}
 				}
 			}
@@ -235,22 +230,18 @@
 				// 비교하려는 변수가 존재하고, 비교 결과가 다르다면 해당 컬럼을 배열에 담는다.
 				if(isset($obj->{"extra_vars{$val->var_idx}"}) && $val->value != $obj->{"extra_vars{$val->var_idx}"})
 				{
+					$is_diff->{"extra_vars{$val->var_idx}"} = TRUE;
+
 					// type의 글 수정에 대한 수행번호를 선언
 					$args_extra_var->type = $this->memorize_type['extra_vars'];
-					$args_extra_var->idx = $oMemorizeModel->getMemorizeLastIdx($document_srl);
-					$args_extra_var->module_srl = $module_srl;
-					$args_extra_var->content_srl = $document_srl;
-					$args_extra_var->parent_srl = $document_srl;
 					$args_extra_var->content1 = $val->value;
 					$args_extra_var->content2 = $val->var_idx;
 					// extra_vars는 데이터 타입이 text이기 때문에 bigtext 타입의 컬럼은 제거 합니다.
 					unset($val->value);
 					$args_extra_var->extra_vars = serialize($val);
-					// 수정시 기존에 등록되었던 확장변수 값을 기록 합니다.
-					$this->insertMemorizeDatas($args_extra_var);
+
+					$args_diff->{"extra_vars{$val->var_idx}"} = $args_extra_var;
 					unset($args_extra_var);
-				
-					$is_diff->{"extra_vars{$val->var_idx}"} = TRUE;
 				}
 			}
 
@@ -269,10 +260,25 @@
 				// extra_vars는 데이터 타입이 text이기 때문에 bigtext 타입의 본문은 제거 합니다.
 				unset($oldDocument['content']);
 				$args->extra_vars = serialize($oldDocument);
-				
-				// 수정시 기존에 등록되었던 글을 기록 합니다.
-				$this->insertMemorizeDatas($args);
 
+				// 수정시 기존에 등록되었던 글을 기록 합니다.
+				$oMemorizeDatas = $this->insertMemorizeDatas($args);
+				$memory_srl = $oMemorizeDatas->variables['memory_srl'];
+
+				if(count($args_diff) >= 1)
+				{
+					foreach($args_diff as $args_val)
+					{
+						$args_val->idx = $oMemorizeModel->getMemorizeLastIdx($document_srl);
+						$args_val->module_srl = $module_srl;
+						$args_val->content_srl = $document_srl;
+						$args_val->parent_srl = $memory_srl;
+						$this->insertMemorizeDatas($args_val);
+					}
+				}
+
+				// 기록된 글의 sequence번호를 기록
+				$args->memory_srl = $memory_srl;
 				// 로그 기록 형식을 수정사항으로 기록
 				$args->code = $this->memorize_code['update'];
 				// 비교 결과 값이 다른 컬럼을 정리한다. 
@@ -369,6 +375,9 @@
 
 			// commit
 			$oDB->commit();
+
+			// memory_srl 리턴
+			$output->add('memory_srl', $args->memory_srl);
 
 			return $output;
 		}

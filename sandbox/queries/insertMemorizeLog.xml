@@ -5,9 +5,10 @@
 	<columns>
 		<column name="code" var="code" filter="number" notnull="notnull" />
 		<column name="module_srl" var="module_srl" filter="number" notnull="notnull" />
+		<column name="memory_srl" var="memory_srl" filter="number" notnull="notnull" />
 		<column name="content_srl" var="content_srl" filter="number" notnull="notnull" />
 		<column name="member_srl" var="member_srl" filter="number" notnull="notnull" />
-		<column name="diff_column" var="column" />
+		<column name="diff_column" var="diff_column" />
 		<column name="ipaddress" var="ipaddress" default="ipaddress()" />
 		<column name="regdate" var="regdate" default="curdate()" />
 	</columns>
