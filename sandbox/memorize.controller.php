@@ -125,7 +125,7 @@
 
 
 			// 비교 결과 차이가 있다면 $is_diff를 TRUE로 바꿈
-			$is_diff = FALSE;
+			$is_diff = null;
 			foreach($oldDocument as $key => $val)
 			{
 				// 비교 대상이 되는 컬럼 값
@@ -137,8 +137,7 @@
 				// 비교하려는 변수가 존재하고, 비교 결과가 다르다면 TRUE를 반환
 				if(isset($obj->{$key}) && $val != $obj->{$key})
 				{
-					$is_diff = TRUE;
-					break;
+					$is_diff[] = $key;
 				}
 			}
 
@@ -171,6 +170,7 @@
 					$idx = 0;
 				}
 
+				$args->msg = serialize($is_diff);
 				// type 01은 글 수정에 대한 수행번호 입니다. 02부터는 따로 정의해서 소개하겠습니다.
 //				$args->type = 01;
 				$args->type = $this->memorize_type['document'];
