@@ -125,7 +125,7 @@
 
 
 			// 비교 결과 차이가 있다면 $is_diff를 TRUE로 바꿈
-			$is_diff = null;
+			$is_diff = array();
 			foreach($oldDocument as $key => $val)
 			{
 				// 비교 대상이 되는 컬럼 값
@@ -137,7 +137,7 @@
 				// 비교하려는 변수가 존재하고, 비교 결과가 다르다면 TRUE를 반환
 				if(isset($obj->{$key}) && $val != $obj->{$key})
 				{
-					$is_diff[] = $key;
+					$is_diff->{$key};
 				}
 			}
 
@@ -170,7 +170,7 @@
 					$idx = 0;
 				}
 
-				$args->msg = serialize($is_diff);
+				$args->code = serialize($is_diff);
 				// type 01은 글 수정에 대한 수행번호 입니다. 02부터는 따로 정의해서 소개하겠습니다.
 //				$args->type = 01;
 				$args->type = $this->memorize_type['document'];
@@ -238,6 +238,48 @@
 		 **/
 		function triggerDeleteDocument(&$obj)
 		{
+			//삭제때는 달랑 이거 하나 넘어오넹~~
+			$document_srl = $obj->document_srl;
+
+			//문서번호에서 module_info 가져오기
+			$oModuleModel = &getModel('module');
+			$module_info = $oModuleModel->getModuleInfoByDocumentSrl($document_srl);
+			$module = $module_info->module;
+			$module_srl = $module_info->module_srl;
+
+			$oDocumentModel = &getModel('document');
+			$oMemorizeModel = &getModel('memorize');
+
+			// 모듈 설정을 가져옵니다.
+			$memorize_config = $oMemorizeModel->getMemorizeConfig($module, $module_srl);
+			if($memorize_config->use_delete_document != 'Y')
+			{
+				return;
+			}
+
+			$oDocument = $oDocumentModel->getDocument($document_srl, FALSE, FALSE);
+			$oldDocument = $oDocument->variables;
+
+			//저장할 변수처리
+			$args->type = $this->memorize_type['document'];
+			if(!$idx = $oMemorizeModel->getMemorizeLastIdx($document_srl))
+			{	// 등록된 글이 없으면 idx 기본값 0을 설정
+				$idx = 0;
+			}
+
+			// 마지막 글의 idx를 가져와서 양수로 바꾼 후 1을 더한 다음, 다시 음수로 바꿉니다.
+			$args->idx = (($idx*-1)+1) * -1;
+			$args->module_srl = $module_srl;
+			$args->content_srl = $document_srl;
+			$args->parent_srl = $module_srl;
+			$args->content1 = $oldDocument['title'];
+			$args->content2 = $oldDocument['content'];
+
+			// extra_vars는 데이터 타입이 text이기 때문에 bigtext 타입의 본문은 제거 합니다.
+			unset($oldDocument['content']);
+			$args->extra_vars = serialize($oldDocument);
+
+			$this->insertMemorizeDatas($args);
 		}
 
 		/**
@@ -270,7 +312,7 @@
 
 		function getVersionDocument()
 		{
-			if(version_compare(__XE_VErsion__, '1.5.0', '>=')) 
+			if(version_compare(__XE_VERSION__, '1.5.0', '>=')) 
 			{
 				return array('content', 'title', 'allow_trackback', 'status', 'is_notice', 'commentStatus', 'ipaddress', 'category_srl', 'commentStatus', 'homepage', 'notify_message', 'password');
 			}
