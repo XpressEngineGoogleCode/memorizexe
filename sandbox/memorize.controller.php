@@ -171,7 +171,8 @@
 				}
 
 				// type 01은 글 수정에 대한 수행번호 입니다. 02부터는 따로 정의해서 소개하겠습니다.
-				$args->type = 01;
+//				$args->type = 01;
+				$args->type = $this->memorize_type['document'];
 				// 마지막 글의 idx를 가져와서 양수로 바꾼 후 1을 더한 다음, 다시 음수로 바꿉니다.
 				$args->idx = (($idx*-1)+1) * -1;
 				$args->module_srl = $module_srl;
