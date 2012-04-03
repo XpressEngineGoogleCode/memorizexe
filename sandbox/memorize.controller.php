@@ -265,6 +265,7 @@
 				$oMemorizeDatas = $this->insertMemorizeDatas($args);
 				$memory_srl = $oMemorizeDatas->variables['memory_srl'];
 
+				// 확장변수 정보를 기록(언어별 글, 확장변수)
 				if(count($args_diff) >= 1)
 				{
 					foreach($args_diff as $args_val)
@@ -272,6 +273,7 @@
 						$args_val->idx = $oMemorizeModel->getMemorizeLastIdx($document_srl);
 						$args_val->module_srl = $module_srl;
 						$args_val->content_srl = $document_srl;
+						// 부모를 글 정보의 memory_srl로 지정
 						$args_val->parent_srl = $memory_srl;
 						$this->insertMemorizeDatas($args_val);
 					}
