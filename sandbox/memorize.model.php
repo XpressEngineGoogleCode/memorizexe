@@ -62,7 +62,35 @@
 				return new Object(-1, "msg_error_occured");
 			}
 
-			return $output->data->idx;
+			// 값이 없으면 기본값 0을 선언
+			if(!$idx = $output->data->idx)
+			{
+				$idx = 0;
+			}
+
+			// 마지막 글의 idx를 가져와서 양수로 바꾼 후 1을 더한 다음, 다시 음수로 바꿉니다.
+			return (($idx*-1)+1) * -1;
+		}
+
+		function getMemorizeWithDocumentExtraVars($args = NULL)
+		{
+			if($args == NULL)
+			{
+				return false;
+			}
+
+			$output = executeQueryArray('memorize.getMemorizeWithDocumentExtraVars', $args);
+			if(!$output->toBool())
+			{
+				return new Object(-1, "msg_error_occured");
+			}
+
+			if(!$output->data)
+			{
+				$output->data = array();
+			}
+
+			return $output->data;
 		}
 	}
 /* End of file memorize.model.php */

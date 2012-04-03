@@ -1,0 +1,19 @@
+<query id="getMemorizeWithDocumentExtraVars" action="select">
+	<tables>
+		<table name="document_extra_vars" />
+	</tables>
+	<columns>
+		<column name="module_srl" alias="module_srl" />
+		<column name="document_srl" alias="document_srl" />
+		<column name="var_idx" alias="var_idx" />
+		<column name="lang_code" alias="lang_code" />
+		<column name="value" alias="value" />
+		<column name="eid" alias="eid" />
+	</columns>
+	<conditions>
+		<condition operation="equal" column="document_srl" var="document_srl" filter="number" notnull="notnull" />
+		<condition operation="in" column="var_idx" var="var_idx" filter="number" pipe="and" />
+		<condition operation="notin" column="var_idx" var="not_var_idx" filter="number" pipe="and" />
+		<condition operation="equal" column="lang_code" var="lang_code" pipe="and" />
+	</conditions>
+</query>

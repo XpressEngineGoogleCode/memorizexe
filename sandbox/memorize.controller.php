@@ -32,14 +32,19 @@
 				return;
 			}
 
+			$oDocumentModel = &getModel('document');
+			$oMemorizeModel = &getModel('memorize');
+
 			// 기본 활용 변수 선언
 			$module = $obj->module;
 			$module_srl = $obj->module_srl;
 			$document_srl = $obj->document_srl;
-			$content = $obj->content;
 
-			$oDocumentModel = &getModel('document');
-			$oMemorizeModel = &getModel('memorize');
+			// 비교결과를 담는다.
+			$is_diff = NULL;
+
+			// 넘어온 값을 우선 배열에 담는다.
+			$args = $obj;
 
 			// 모듈 설정을 가져옵니다.
 			$memorize_config = $oMemorizeModel->getMemorizeConfig($module, $module_srl);
@@ -51,62 +56,62 @@
 			// 아이피
 			if(!isset($obj->ipaddress))
 			{	// 현재 document.model.php updateDocument에 버그 같아서 이슈에 제출상태
-				//$obj->ipaddress = $_SERVER['REMOTE_ADDR'];
+				//$args->ipaddress = $_SERVER['REMOTE_ADDR'];
 			}
 
 			// 카테고리
 			if(!isset($obj->category_srl))
 			{
-				$obj->category_srl = 0;
+				$args->category_srl = 0;
 			}
 
 			// 댓글등록여부
 			if(isset($obj->comment_status))
 			{
-				$obj->commentStatus = $obj->comment_status;
+				$args->commentStatus = $obj->comment_status;
 			}
 			else
 			{
-				$obj->commentStatus = 'DENY';
+				$args->commentStatus = 'DENY';
 			}
 
 			// 트랙백
-			if($obj->allow_trackback!='Y')
+			if($obj->allow_trackback != 'Y')
 			{
-				$obj->allow_trackback = 'N';
+				$args->allow_trackback = 'N';
 			}
 
 			// 홈페이지 주소
 			if(!isset($obj->homepage))
 			{
-				$obj->homepage = '';
+				$args->homepage = '';
 			}
-			elseif(!preg_match('/^[a-z]+:\/\//i',$obj->homepage))
+			elseif(!preg_match('/^[a-z]+:\/\//i', $obj->homepage))
 			{
-				$obj->homepage = 'http://'.$obj->homepage;
+				$args->homepage = "http://{$obj->homepage}";
 			}
 
 			// 알림
 			if($obj->notify_message != 'Y')
 			{
-				$obj->notify_message = 'N';	
+				$args->notify_message = 'N';	
 			}
 
 			// 패스워드
 			if(isset($obj->password))
 			{
-				$obj->password = md5($obj->password);
+				$args->password = md5($obj->password);
 			}
 
 			// 제목이 없는 글은 본문의 내용으로 대체한다.
 			if(isset($obj->title))
 			{
-				if($obj->title == '') $obj->title = cut_str(strip_tags($obj->content),20,'...');
-				if($obj->title == '') $obj->title = 'Untitled';
+				if($obj->title == '') $args->title = cut_str(strip_tags($obj->content), 20, '...');
+				if($obj->title == '') $args->title = 'Untitled';
 			}
 
 			// 특정 문구를 제거
-			$obj->content = preg_replace('!<\!--(Before|After)(Document|Comment)\(([0-9]+),([0-9]+)\)-->!is', '', $obj->content);
+			$args->content = preg_replace('!<\!--(Before|After)(Document|Comment)\(([0-9]+),([0-9]+)\)-->!is', '', $obj->content);
 
 			// 관리자 그룹이 아닐경우 본문에 HackTag를 제거
 			if(Context::get('is_logged'))
@@ -115,67 +120,147 @@
 
 				if($logged_info->is_admin != 'Y')
 				{
-					$obj->content = removeHackTag($obj->content);
+					$args->content = removeHackTag($args->content);
 				}
+
+				$args->member_srl = $logged_info->member_srl;
+			}
+			else
+			{
+				$args->member_srl = 0;
 			}
 
 			// 현재 글 수정 시 입력받은 값과 비교할 기존의 글 정보를 가져옴
 			$oDocument = $oDocumentModel->getDocument($document_srl, FALSE, FALSE);
 			$oldDocument = $oDocument->variables;
 
+			// 기존에 등록된 언어와 현재 설정된 언어가 다른지 확인
+			if($oldDocument['lang_code'] != Context::getLangType())
+			{
+				$is_lang = TRUE;
+			}
 
-			// 비교 결과 차이가 있다면 $is_diff를 TRUE로 바꿈
-			$is_diff = array();
+			/*
+			 * xe_documents의 글을 비교한다.
+			*/
 			foreach($oldDocument as $key => $val)
 			{
+				// 기존에 등록된 언어와 현재 설정된 언어가 다르다면 title, content는 비교하지 않는다.
+				if($is_lang && in_array($key, array('title', 'content')))
+				{
+					continue;
+				}
+
 				// 비교 대상이 되는 컬럼 값
 				if(!in_array($key, $this->getVersionDocument()))
 				{
 					continue;
 				}
 
-				// 비교하려는 변수가 존재하고, 비교 결과가 다르다면 TRUE를 반환
+				// 비교하려는 변수가 존재하고, 비교 결과가 다르다면 해당 컬럼을 배열에 담는다.
 				if(isset($obj->{$key}) && $val != $obj->{$key})
 				{
-					$is_diff->{$key};
+					$is_diff->{$key} = TRUE;
 				}
 			}
 
-/*
-*
-*	확장변수(언어코드 포함)에 대한 처리를 진행 해야합니다.
-*
-		
-		if($source_obj->get('lang_code') != Context::getLangType()) {
-			// Change not extra vars but language code of the original document if document's lang_code doesn't exist.
-			if(!$source_obj->get('lang_code')) {
-				$lang_code_args->document_srl = $source_obj->get('document_srl');
-				$lang_code_args->lang_code = Context::getLangType();
-				$output = executeQuery('document.updateDocumentsLangCode', $lang_code_args);
-			} else {
-				$extra_content->title = $obj->title;
-				$extra_content->content = $obj->content;
+			// 기존에 등록된 언어와 현재 설정된 언어가 다르다면 확장변수에서 찾는다
+			if($is_lang)
+			{
+				// 확장변수 중 언어별 타이틀(-1)과 본문(-2)을 가져온다.
+				$obj_extra_var->document_srl = $document_srl;
+				$obj_extra_var->lang_code = Context::getLangType();
+				$obj_extra_var->var_idx = array(-1, -2);
+				$oExtraLang = $oMemorizeModel->getMemorizeWithDocumentExtraVars($obj_extra_var);
 
-				$document_args->document_srl = $source_obj->get('document_srl');
-				$document_output = executeQuery('document.getDocument', $document_args);
-				$obj->title = $document_output->data->title;
-				$obj->content = $document_output->data->content;
-			}
-		}
-*/
-			if($is_diff)
-			{	// 제일 마지막에 등록된 히스토리 글의 idx 번호를 구합니다. (음수로써 가장 큰 수)
-				if(!$idx = $oMemorizeModel->getMemorizeLastIdx($document_srl))
-				{	// 등록된 글이 없으면 idx 기본값 0을 설정
-					$idx = 0;
+				/*
+				 * xe_document_extra_vars에서 언어별 타이틀, 본문을 비교한다.
+				*/
+				foreach($oExtraLang as $val)
+				{
+					// 언어별 타이틀을 비교하여 결과가 다르다면 해당 컬럼을 배열에 담고 해당 내용을 기록
+					if($val->var_idx == -1 && $val->value != $obj->title)
+					{
+						// type의 글 수정에 대한 수행번호를 선언(언어별 확장변수)
+						$args_extra_lang->type = $this->memorize_type['lang'];
+						$args_extra_lang->idx = $oMemorizeModel->getMemorizeLastIdx($document_srl);
+						$args_extra_lang->module_srl = $module_srl;
+						$args_extra_lang->content_srl = $document_srl;
+						$args_extra_lang->parent_srl = $document_srl;
+						$args_extra_lang->content1 = $val->value;
+						$args_extra_lang->content2 = $val->var_idx;
+						// extra_vars는 데이터 타입이 text이기 때문에 bigtext 타입의 컬럼은 제거 합니다.
+						unset($val->value);
+						$args_extra_lang->extra_vars = serialize($val);
+						// 수정시 기존에 등록되었던 확장변수 값을 기록 합니다.
+						$this->insertMemorizeDatas($args_extra_lang);
+						unset($args_extra_lang);
+						
+						$is_diff->extra_var_title = TRUE;
+					}
+					// 언어별 본문을 비교하여 결과가 다르다면 해당 컬럼을 배열에 담고 해당 내용을 기록
+					elseif($val->var_idx == -2 && $val->value != $obj->content)
+					{
+						// type의 글 수정에 대한 수행번호를 선언
+						$args_extra_lang->type = $this->memorize_type['lang'];
+						$args_extra_lang->idx = $oMemorizeModel->getMemorizeLastIdx($document_srl);
+						$args_extra_lang->module_srl = $module_srl;
+						$args_extra_lang->content_srl = $document_srl;
+						$args_extra_lang->parent_srl = $document_srl;
+						$args_extra_lang->content1 = $val->value;
+						$args_extra_lang->content2 = $val->var_idx;
+						// extra_vars는 데이터 타입이 text이기 때문에 bigtext 타입의 컬럼은 제거 합니다.
+						unset($val->value);
+						$args_extra_lang->extra_vars = serialize($val);
+						// 수정시 기존에 등록되었던 확장변수 값을 기록 합니다.
+						$this->insertMemorizeDatas($args_extra_lang);
+						unset($args_extra_lang);
+						
+						$is_diff->extra_var_content = TRUE;
+					}
 				}
+			}
 
-				$args->code = serialize($is_diff);
-				// type 01은 글 수정에 대한 수행번호 입니다. 02부터는 따로 정의해서 소개하겠습니다.
-//				$args->type = 01;
+			// 확장변수 중 언어별 데이터를 가져온다.
+			$obj_extra_var->not_var_idx = $args_extra_var->var_idx;
+			// 확장변수를 불러오기 위해 언어별 타이틀, 본문에 사용되었던 변수를 제거
+			unset($obj_extra_var->var_idx);
+			$oExtraVars = $oMemorizeModel->getMemorizeWithDocumentExtraVars($obj_extra_var);
+
+			/*
+			 * xe_document_extra_vars에서 언어별 타이틀, 본문을 제외한 확장변수를 비교한다.
+			*/
+			foreach($oExtraVars as $val)
+			{
+				// 비교하려는 변수가 존재하고, 비교 결과가 다르다면 해당 컬럼을 배열에 담는다.
+				if(isset($obj->{"extra_vars{$val->var_idx}"}) && $val->value != $obj->{"extra_vars{$val->var_idx}"})
+				{
+					// type의 글 수정에 대한 수행번호를 선언
+					$args_extra_var->type = $this->memorize_type['extra_vars'];
+					$args_extra_var->idx = $oMemorizeModel->getMemorizeLastIdx($document_srl);
+					$args_extra_var->module_srl = $module_srl;
+					$args_extra_var->content_srl = $document_srl;
+					$args_extra_var->parent_srl = $document_srl;
+					$args_extra_var->content1 = $val->value;
+					$args_extra_var->content2 = $val->var_idx;
+					// extra_vars는 데이터 타입이 text이기 때문에 bigtext 타입의 컬럼은 제거 합니다.
+					unset($val->value);
+					$args_extra_var->extra_vars = serialize($val);
+					// 수정시 기존에 등록되었던 확장변수 값을 기록 합니다.
+					$this->insertMemorizeDatas($args_extra_var);
+					unset($args_extra_var);
+				
+					$is_diff->{"extra_vars{$val->var_idx}"} = TRUE;
+				}
+			}
+
+			// 비교한 컬럼 정보와 함께 xe_documents의 글을 기록한다.
+			if(count($is_diff) >= 1)
+			{
+				// type의 글 수정에 대한 수행번호를 선언
 				$args->type = $this->memorize_type['document'];
 				// 마지막 글의 idx를 가져와서 양수로 바꾼 후 1을 더한 다음, 다시 음수로 바꿉니다.
-				$args->idx = (($idx*-1)+1) * -1;
+				$args->idx = $oMemorizeModel->getMemorizeLastIdx($document_srl);
 				$args->module_srl = $module_srl;
 				$args->content_srl = $document_srl;
 				$args->parent_srl = $module_srl;
@@ -184,17 +269,72 @@
 				// extra_vars는 데이터 타입이 text이기 때문에 bigtext 타입의 본문은 제거 합니다.
 				unset($oldDocument['content']);
 				$args->extra_vars = serialize($oldDocument);
-
+				
 				// 수정시 기존에 등록되었던 글을 기록 합니다.
 				$this->insertMemorizeDatas($args);
+
+				// 로그 기록 형식을 수정사항으로 기록
+				$args->code = $this->memorize_code['update'];
+				// 비교 결과 값이 다른 컬럼을 정리한다. 
+				$args->diff_column = serialize($is_diff);
+
+				// 수정시 로그를 기록합니다.
+				$this->insertMemorizeLog($args);
+			}
+		}
+
+		/**
+		 * @brief 히스토리 로그 추가
+		 **/
+		function insertMemorizeLog($args = NULL)
+		{
+			if($args == NULL)
+			{
+				return new Object(-1, "msg_error_occured");
 			}
 
+			// begin transaction
+			$oDB = &DB::getInstance();
+			$oDB->begin();
+
+			// trigger 호출 (before) : 타 모듈 연동을 위해 선언
+			$output = ModuleHandler::triggerCall('memorize.insertMemorizeLog', 'before', $args);
+			if(!$output->toBool())
+			{
+				return $output;
+			}
+
+			$output = executeQuery('memorize.insertMemorizeLog', $args);
+			if(!$output->toBool())
+			{
+				$oDB->rollback();
+				return new Object(-1, "msg_error_occured");
+			}
+
+			// trigger 호출 (after) : 타 모듈 연동을 위해 선언
+			$trigger_output = ModuleHandler::triggerCall('memorize.insertMemorizeLog', 'after', $args);
+			if(!$trigger_output->toBool())
+			{
+				$oDB->rollback();
+				return $trigger_output;
+			}
+
+			// commit
+			$oDB->commit();
+
+			return $output;
 		}
 
 		/**
 		 * @brief 히스토리 정보 추가
 		 **/
-		function insertMemorizeDatas($args) {
+		function insertMemorizeDatas($args = NULL)
+		{
+			if($args == NULL)
+			{
+				return new Object(-1, "msg_error_occured");
+			}
+
 			// begin transaction
 			$oDB = &DB::getInstance();
 			$oDB->begin();
@@ -314,7 +454,7 @@
 		{
 			if(version_compare(__XE_VERSION__, '1.5.0', '>=')) 
 			{
-				return array('content', 'title', 'allow_trackback', 'status', 'is_notice', 'commentStatus', 'ipaddress', 'category_srl', 'commentStatus', 'homepage', 'notify_message', 'password');
+				return array('content', 'title', 'allow_trackback', 'status', 'is_notice', 'commentStatus', 'ipaddress', 'category_srl', 'homepage', 'notify_message', 'password');
 			}
 			return array('lang_code','is_notice','title','content','password','email_address','homepage','tags','extra_vars','ipaddress','allow_trackback','nofity_message','is_secret','allow_comment','lock_comment','nick_name');
 		}
