@@ -436,7 +436,16 @@
 			unset($oldDocument['content']);
 			$args->extra_vars = serialize($oldDocument);
 
-			$this->insertMemorizeDatas($args);
+			$oMemorizeDatas = $this->insertMemorizeDatas($args);
+			$memory_srl = $oMemorizeDatas->variables['memory_srl'];
+
+			// 기록된 글의 sequence번호를 기록
+			$args->memory_srl = $memory_srl;
+			// 로그 기록 형식을 수정사항으로 기록
+			$args->code = $this->memorize_code['delete'];
+
+			// 수정시 로그를 기록합니다.
+			$this->insertMemorizeLog($args);
 		}
 
 		/**
