@@ -414,6 +414,14 @@
 
 			// 모듈 설정을 가져옵니다.
 			$memorize_config = $oMemorizeModel->getMemorizeConfig($module, $module_srl);
+
+			if($memorize_config->block_del_document == 'Y')
+			{
+				$oCommentModel = &getModel('comment');
+				$child = $oCommentModel->getCommentCount($document_srl);
+				if($child>0) return new Object(-1, 'block_del_document');
+			}
+
 			if($memorize_config->use_delete_document != 'Y')
 			{
 				return;
@@ -592,6 +600,7 @@
 			// 모듈 설정을 가져옵니다.
 			$oMemorizeModel = &getModel('memorize');
 			$memorize_config = $oMemorizeModel->getMemorizeConfig($module, $module_srl);
+
 			if($memorize_config->use_delete_comment != 'Y')
 			{
 				return;
