@@ -123,12 +123,6 @@
 	<item name="about_memorize_block_del_document">
 		<value xml:lang="ko"><![CDATA[다른사람이 작성한 댓글이 존재하면 글을 삭제하지 못하게 합니다.]]></value>
 	</item>
-	<item name="memorize_block_del_comment">
-		<value xml:lang="ko"><![CDATA[댓글 삭제 금지]]></value>
-	</item>
-	<item name="about_memorize_block_del_comment">
-		<value xml:lang="ko"><![CDATA[다른사람이 작성한 자식의 댓글이 존재하면 댓글을 삭제하지 못하게 합니다.]]></value>
-	</item>
 	<item name="memorize_use_autosave">
 		<value xml:lang="ko"><![CDATA[문서보존]]></value>
 	</item>
@@ -147,5 +141,8 @@
 	</item>
 	<item name="use_comment_only">
 		<value xml:lang="ko"><![CDATA[댓글만 사용]]></value>
+	</item>
+	<item name="block_del_document">
+		<value xml:lang="ko"><![CDATA[댓글이 있어서 삭제가 금지되었습니다.]]></value>
 	</item>
 </lang>
