@@ -43,7 +43,7 @@
 			// 비교결과를 담는다.
 			$is_diff = NULL;
 
-			// 기록할 확장변수의 정보를 담는다. 
+			// 기록할 확장변수의 정보를 담는다.
 			$args_diff = NULL;
 
 			// 넘어온 값을 우선 배열에 담는다.
@@ -97,7 +97,7 @@
 			// 알림
 			if($obj->notify_message != 'Y')
 			{
-				$args->notify_message = 'N';	
+				$args->notify_message = 'N';
 			}
 
 			// 패스워드
@@ -283,7 +283,7 @@
 				$args->memory_srl = $memory_srl;
 				// 로그 기록 형식을 수정사항으로 기록
 				$args->code = $this->memorize_code['update'];
-				// 비교 결과 값이 다른 컬럼을 정리한다. 
+				// 비교 결과 값이 다른 컬럼을 정리한다.
 				$args->diff_column = serialize($is_diff);
 
 				// 수정시 로그를 기록합니다.
@@ -319,6 +319,7 @@
 			}
 
 			$output = executeQuery('memorize.insertMemorizeLog', $args);
+
 			if(!$output->toBool())
 			{
 				$oDB->rollback();
@@ -395,6 +396,10 @@
 		 **/
 		function triggerDeleteDocument(&$obj)
 		{
+			if(!$obj->document_srl)
+			{
+				return;
+			}
 			//삭제때는 달랑 이거 하나 넘어오넹~~
 			$document_srl = $obj->document_srl;
 
@@ -419,13 +424,8 @@
 
 			//저장할 변수처리
 			$args->type = $this->memorize_type['document'];
-			if(!$idx = $oMemorizeModel->getMemorizeLastIdx($document_srl))
-			{	// 등록된 글이 없으면 idx 기본값 0을 설정
-				$idx = 0;
-			}
 
-			// 마지막 글의 idx를 가져와서 양수로 바꾼 후 1을 더한 다음, 다시 음수로 바꿉니다.
-			$args->idx = (($idx*-1)+1) * -1;
+			$args->idx = $oMemorizeModel->getMemorizeLastIdx($document_srl);
 			$args->module_srl = $module_srl;
 			$args->content_srl = $document_srl;
 			$args->parent_srl = $module_srl;
@@ -576,6 +576,53 @@
 		 **/
 		function triggerDeleteComment(&$obj)
 		{
+			if(!$obj->module_srl || !$obj->document_srl || !$obj->comment_srl)
+			{
+				return;
+			}
+
+			$module_srl = $obj->module_srl;
+			$comment_srl = $obj->comment_srl;
+
+			//module_srl에서 module_info 가져오기
+			$oModuleModel = &getModel('module');
+			$module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
+			$module = $module_info->module;
+
+			// 모듈 설정을 가져옵니다.
+			$oMemorizeModel = &getModel('memorize');
+			$memorize_config = $oMemorizeModel->getMemorizeConfig($module, $module_srl);
+			if($memorize_config->use_delete_comment != 'Y')
+			{
+				return;
+			}
+
+			$oldComment = $obj->variables;
+
+			//저장할 변수처리
+			$args->type = $this->memorize_type['comment'];
+
+			// 마지막 글의 idx를 가져와서 양수로 바꾼 후 1을 더한 다음, 다시 음수로 바꿉니다.
+			$args->idx = $oMemorizeModel->getMemorizeLastIdx($comment_srl);
+			$args->module_srl = $module_srl;
+			$args->content_srl = $comment_srl;
+			$args->parent_srl = $oldComment['parent_srl'];
+			$args->content2 = $oldComment['content'];
+
+			// extra_vars는 데이터 타입이 text이기 때문에 bigtext 타입의 본문은 제거 합니다.
+			unset($oldComment['content']);
+			$args->extra_vars = serialize($oldComment);
+
+			$oMemorizeDatas = $this->insertMemorizeDatas($args);
+			$memory_srl = $oMemorizeDatas->variables['memory_srl'];
+
+			// 기록된 글의 sequence번호를 기록
+			$args->memory_srl = $memory_srl;
+			// 로그 기록 형식을 수정사항으로 기록
+			$args->code = $this->memorize_code['delete'];
+
+			// 수정시 로그를 기록합니다.
+			$this->insertMemorizeLog($args);
 		}
 
 		/**
@@ -594,7 +641,7 @@
 
 		function getVersionDocument()
 		{
-			if(version_compare(__XE_VERSION__, '1.5.0', '>=')) 
+			if(version_compare(__XE_VERSION__, '1.5.0', '>='))
 			{
 				return array('content', 'title', 'allow_trackback', 'status', 'is_notice', 'commentStatus', 'ipaddress', 'category_srl', 'homepage', 'notify_message', 'password');
 			}
