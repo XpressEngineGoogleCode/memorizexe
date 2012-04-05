@@ -639,6 +639,73 @@
 		 **/
 		function triggerDeleteFile(&$obj)
 		{
+			if(!$obj->module_srl || !$obj->upload_target_srl || !$obj->file_srl)
+			{
+				return;
+			}
+
+			//valid가 아니면 패쓰...
+			if($obj->isvalid != 'Y') return;
+
+			$module_srl = $obj->module_srl;
+			//module_srl에서 module_info 가져오기
+			$oModuleModel = &getModel('module');
+			$module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
+			$module = $module_info->module;
+
+			// 모듈 설정을 가져옵니다.
+			$oMemorizeModel = &getModel('memorize');
+			$memorize_config = $oMemorizeModel->getMemorizeConfig($module, $module_srl);
+
+			if($memorize_config->use_delete_file != 'Y')
+			{
+				return;
+			}
+			
+			$upload_target_srl = $obj->upload_target_srl;
+			$file = realpath($obj->uploaded_filename);
+			//화일이 없으면 패쓰...
+			if(!file_exists($file)) return;
+
+			if($obj->direct_download == 'Y')
+			{
+				$path = sprintf("./files/memoriz_attach/images/%s/%s", $module_srl, getNumberingPath($upload_target_srl,3));
+			}
+			else
+			{
+				$path = sprintf("./files/memoriz_attach/binaries/%s/%s", $module_srl, getNumberingPath($upload_target_srl,3));
+			}
+			//폴더생성
+			if(!FileHandler::makeDir($path)) return new Object(-1,'msg_not_permitted_create');
+			
+			//원래이름을 보전하자...
+			$file_name = substr(strrchr($obj->uploaded_filename,'/'),1);
+			//보관할 화일
+			$memorize_file = sprintf('%s/%s',$path,$file_name);
+			//복사
+			@copy($file, $memorize_file);
+
+			//변수정리
+			// 마지막 글의 idx를 가져와서 양수로 바꾼 후 1을 더한 다음, 다시 음수로 바꿉니다.
+			$args->idx = $oMemorizeModel->getMemorizeLastIdx($comment_srl);
+			$args->content1 = $obj->source_filename;
+			$args->content2 = $memorize_file;
+			$args->extra_vars = serialize($obj);
+			$args->module_srl = $module_srl;
+			$args->content_srl = $obj->file_srl;
+			$args->parent_srl = $obj->upload_target_srl;
+			$args->type = $args->type = $this->memorize_type['file'];
+
+			$oMemorizeDatas = $this->insertMemorizeDatas($args);
+			$memory_srl = $oMemorizeDatas->variables['memory_srl'];
+
+			// 기록된 글의 sequence번호를 기록
+			$args->memory_srl = $memory_srl;
+			// 로그 기록 형식을 수정사항으로 기록
+			$args->code = $this->memorize_code['file'];
+
+			// 수정시 로그를 기록합니다.
+			$this->insertMemorizeLog($args);
 		}
 
 		/**
