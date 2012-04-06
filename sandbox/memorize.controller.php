@@ -41,17 +41,17 @@
 			$document_srl = $obj->document_srl;
 
 			// 비교결과를 담는다.
-			$is_diff = NULL;
+			$is_memorize_diff = NULL;
 
 			// 기록할 확장변수의 정보를 담는다.
-			$args_diff = NULL;
+			$memorize_diff = NULL;
 
 			// 넘어온 값을 우선 배열에 담는다.
-			$args = $obj;
+			$document_obj = $obj;
 
 			// 모듈 설정을 가져옵니다.
-			$memorize_config = $oMemorizeModel->getMemorizeConfig($module, $module_srl);
-			if($memorize_config->use_update_document != 'Y')
+			$memorizeConfig = $oMemorizeModel->getMemorizeConfig($module, $module_srl);
+			if($memorizeConfig->use_update_document != 'Y')
 			{
 				return;
 			}
@@ -65,56 +65,56 @@
 			// 카테고리
 			if(!isset($obj->category_srl))
 			{
-				$args->category_srl = 0;
+				$document_obj->category_srl = 0;
 			}
 
 			// 댓글등록여부
 			if(isset($obj->comment_status))
 			{
-				$args->commentStatus = $obj->comment_status;
+				$document_obj->commentStatus = $obj->comment_status;
 			}
 			else
 			{
-				$args->commentStatus = 'DENY';
+				$document_obj->commentStatus = 'DENY';
 			}
 
 			// 트랙백
 			if($obj->allow_trackback != 'Y')
 			{
-				$args->allow_trackback = 'N';
+				$document_obj->allow_trackback = 'N';
 			}
 
 			// 홈페이지 주소
 			if(!isset($obj->homepage))
 			{
-				$args->homepage = '';
+				$document_obj->homepage = '';
 			}
 			elseif(!preg_match('/^[a-z]+:\/\//i', $obj->homepage))
 			{
-				$args->homepage = "http://{$obj->homepage}";
+				$document_obj->homepage = "http://{$obj->homepage}";
 			}
 
 			// 알림
 			if($obj->notify_message != 'Y')
 			{
-				$args->notify_message = 'N';
+				$document_obj->notify_message = 'N';
 			}
 
 			// 패스워드
 			if(isset($obj->password))
 			{
-				$args->password = md5($obj->password);
+				$document_obj->password = md5($obj->password);
 			}
 
 			// 제목이 없는 글은 본문의 내용으로 대체한다.
 			if(isset($obj->title))
 			{
-				if($obj->title == '') $args->title = cut_str(strip_tags($obj->content), 20, '...');
-				if($obj->title == '') $args->title = 'Untitled';
+				if($obj->title == '') $document_obj->title = cut_str(strip_tags($obj->content), 20, '...');
+				if($obj->title == '') $document_obj->title = 'Untitled';
 			}
 
 			// 특정 문구를 제거
-			$args->content = preg_replace('!<\!--(Before|After)(Document|Comment)\(([0-9]+),([0-9]+)\)-->!is', '', $obj->content);
+			$document_obj->content = preg_replace('!<\!--(Before|After)(Document|Comment)\(([0-9]+),([0-9]+)\)-->!is', '', $obj->content);
 
 			// 관리자 그룹이 아닐경우 본문에 HackTag를 제거
 			if(Context::get('is_logged'))
@@ -123,14 +123,9 @@
 
 				if($logged_info->is_admin != 'Y')
 				{
-					$args->content = removeHackTag($args->content);
+					$document_obj->content = removeHackTag($document_obj->content);
 				}
 
-				$args->member_srl = $logged_info->member_srl;
-			}
-			else
-			{
-				$args->member_srl = 0;
 			}
 
 			// 현재 글 수정 시 입력받은 값과 비교할 기존의 글 정보를 가져옴
@@ -163,7 +158,7 @@
 				// 비교하려는 변수가 존재하고, 비교 결과가 다르다면 해당 컬럼을 배열에 담는다.
 				if(isset($obj->{$key}) && $val != $obj->{$key})
 				{
-					$is_diff->{$key} = TRUE;
+					$is_memorize_diff->{$key} = TRUE;
 				}
 			}
 
@@ -171,123 +166,129 @@
 			if($is_lang)
 			{
 				// 확장변수 중 언어별 타이틀(-1)과 본문(-2)을 가져온다.
-				$obj_extra_var->document_srl = $document_srl;
-				$obj_extra_var->lang_code = Context::getLangType();
-				$obj_extra_var->var_idx = array(-1, -2);
-				$oExtraLang = $oMemorizeModel->getMemorizeWithDocumentExtraVars($obj_extra_var);
+				$document_lang_obj->document_srl = $document_srl;
+				$document_lang_obj->lang_code = Context::getLangType();
+				$document_lang_obj->var_idx = array(-1, -2);
+				$document_lang_output = $oMemorizeModel->getMemorizeWithDocumentExtraVars($document_lang_obj);
+				unset($document_lang_obj);
 
 				/*
 				 * xe_document_extra_vars에서 언어별 타이틀, 본문을 비교한다.
 				*/
-				foreach($oExtraLang as $val)
+				foreach($document_lang_output as $val)
 				{
 					// 언어별 타이틀을 비교하여 결과가 다르다면 해당 컬럼을 배열에 담고 해당 내용을 기록
 					if($val->var_idx == -1 && $val->value != $obj->title)
 					{
-						$is_diff->extra_var_title = TRUE;
+						$is_memorize_diff->extra_var_title = TRUE;
 
 						// type의 글 수정에 대한 수행번호를 선언(언어별 확장변수)
-						$args_extra_lang->type = $this->memorize_type['lang'];
-						$args_extra_lang->content1 = $val->value;
-						$args_extra_lang->content2 = $val->var_idx;
+						$document_lang_obj->type = $this->memorize_type['lang'];
+						$document_lang_obj->content1 = $val->value;
+						$document_lang_obj->content2 = $val->var_idx;
 						// extra_vars는 데이터 타입이 text이기 때문에 bigtext 타입의 컬럼은 제거 합니다.
 						unset($val->value);
-						$args_extra_lang->extra_vars = serialize($val);
+						$document_lang_obj->extra_vars = serialize($val);
 
-						$args_diff->extra_var_title = $args_extra_lang;
-						unset($args_extra_lang);
+						$memorize_diff->extra_var_title = $document_lang_obj;
+						unset($document_lang_obj);
 					}
 					// 언어별 본문을 비교하여 결과가 다르다면 해당 컬럼을 배열에 담고 해당 내용을 기록
 					elseif($val->var_idx == -2 && $val->value != $obj->content)
 					{
-						$is_diff->extra_var_content = TRUE;
+						$is_memorize_diff->extra_var_content = TRUE;
 
 						// type의 글 수정에 대한 수행번호를 선언
-						$args_extra_lang->type = $this->memorize_type['lang'];
-						$args_extra_lang->content1 = $val->value;
-						$args_extra_lang->content2 = $val->var_idx;
+						$document_lang_obj->type = $this->memorize_type['lang'];
+						$document_lang_obj->content1 = $val->value;
+						$document_lang_obj->content2 = $val->var_idx;
 						// extra_vars는 데이터 타입이 text이기 때문에 bigtext 타입의 컬럼은 제거 합니다.
 						unset($val->value);
-						$args_extra_lang->extra_vars = serialize($val);
+						$document_lang_obj->extra_vars = serialize($val);
 
-						$args_diff->extra_var_content = $args_extra_lang;
-						unset($args_extra_lang);
+						$memorize_diff->extra_var_content = $document_lang_obj;
+						unset($document_lang_obj);
 					}
 				}
 			}
 
 			// 확장변수 중 언어별 데이터를 가져온다.
-			$obj_extra_var->not_var_idx = $args_extra_var->var_idx;
-			// 확장변수를 불러오기 위해 언어별 타이틀, 본문에 사용되었던 변수를 제거
-			unset($obj_extra_var->var_idx);
-			$oExtraVars = $oMemorizeModel->getMemorizeWithDocumentExtraVars($obj_extra_var);
+			$document_extra_var_obj->document_srl = $document_srl;
+			$document_extra_var_obj->lang_code = Context::getLangType();
+			$document_extra_var_obj->not_var_idx = array(-1, -2);
+			$document_extra_var_output = $oMemorizeModel->getMemorizeWithDocumentExtraVars($document_extra_var_obj);
+			unset($document_extra_var_obj);
 
 			/*
 			 * xe_document_extra_vars에서 언어별 타이틀, 본문을 제외한 확장변수를 비교한다.
 			*/
-			foreach($oExtraVars as $val)
+			foreach($document_extra_var_output as $val)
 			{
 				// 비교하려는 변수가 존재하고, 비교 결과가 다르다면 해당 컬럼을 배열에 담는다.
 				if(isset($obj->{"extra_vars{$val->var_idx}"}) && $val->value != $obj->{"extra_vars{$val->var_idx}"})
 				{
-					$is_diff->{"extra_vars{$val->var_idx}"} = TRUE;
+					$is_memorize_diff->{"extra_vars{$val->var_idx}"} = TRUE;
 
 					// type의 글 수정에 대한 수행번호를 선언
-					$args_extra_var->type = $this->memorize_type['extra_vars'];
-					$args_extra_var->content1 = $val->value;
-					$args_extra_var->content2 = $val->var_idx;
+					$document_extra_var_obj->type = $this->memorize_type['extra_var'];
+					$document_extra_var_obj->content1 = $val->value;
+					$document_extra_var_obj->content2 = $val->var_idx;
 					// extra_vars는 데이터 타입이 text이기 때문에 bigtext 타입의 컬럼은 제거 합니다.
 					unset($val->value);
-					$args_extra_var->extra_vars = serialize($val);
+					$document_extra_var_obj->extra_vars = serialize($val);
 
-					$args_diff->{"extra_vars{$val->var_idx}"} = $args_extra_var;
-					unset($args_extra_var);
+					$memorize_diff->{"extra_vars{$val->var_idx}"} = $document_extra_var_obj;
+					unset($document_extra_var_obj);
 				}
 			}
 
 			// 비교한 컬럼 정보와 함께 xe_documents의 글을 기록한다.
-			if(count($is_diff) >= 1)
+			if(count($is_memorize_diff) >= 1)
 			{
 				// type의 글 수정에 대한 수행번호를 선언
-				$args->type = $this->memorize_type['document'];
+				$memorizeData_obj->type = $this->memorize_type['document'];
 				// 마지막 글의 idx를 가져와서 양수로 바꾼 후 1을 더한 다음, 다시 음수로 바꿉니다.
-				$args->idx = $oMemorizeModel->getMemorizeLastIdx($document_srl);
-				$args->module_srl = $module_srl;
-				$args->content_srl = $document_srl;
-				$args->parent_srl = $module_srl;
-				$args->content1 = $oldDocument['title'];
-				$args->content2 = $oldDocument['content'];
+				$memorizeData_obj->idx = $oMemorizeModel->getMemorizeLastIdx($document_srl);
+				$memorizeData_obj->module_srl = $module_srl;
+				$memorizeData_obj->content_srl = $document_srl;
+				$memorizeData_obj->parent_srl = $module_srl;
+				$memorizeData_obj->content1 = $oldDocument['title'];
+				$memorizeData_obj->content2 = $oldDocument['content'];
 				// extra_vars는 데이터 타입이 text이기 때문에 bigtext 타입의 본문은 제거 합니다.
 				unset($oldDocument['content']);
-				$args->extra_vars = serialize($oldDocument);
+				$memorizeData_obj->extra_vars = serialize($oldDocument);
 
 				// 수정시 기존에 등록되었던 글을 기록 합니다.
-				$oMemorizeDatas = $this->insertMemorizeDatas($args);
-				$memory_srl = $oMemorizeDatas->variables['memory_srl'];
+				$memorizeData_output = $this->insertMemorizeDatas($memorizeData_obj);
+				$memory_srl = $memorizeData_output->variables['memory_srl'];
 
 				// 확장변수 정보를 기록(언어별 글, 확장변수)
-				if(count($args_diff) >= 1)
+				if(count($memorize_diff) >= 1)
 				{
-					foreach($args_diff as $args_val)
+					foreach($memorize_diff as $val)
 					{
-						$args_val->idx = $oMemorizeModel->getMemorizeLastIdx($document_srl);
-						$args_val->module_srl = $module_srl;
-						$args_val->content_srl = $document_srl;
+						$memorizeData_obj = $val;
+						$memorizeData_obj->idx = $oMemorizeModel->getMemorizeLastIdx($document_srl);
+						$memorizeData_obj->module_srl = $module_srl;
+						$memorizeData_obj->content_srl = $document_srl;
 						// 부모를 글 정보의 memory_srl로 지정
-						$args_val->parent_srl = $memory_srl;
-						$this->insertMemorizeDatas($args_val);
+						$memorizeData_obj->parent_srl = $memory_srl;
+						$this->insertMemorizeDatas($memorizeData_obj);
 					}
 				}
 
+				// 로그 기록에 필요한 정보
+				$memorizeLog_obj->module_srl = $module_srl;
+				$memorizeLog_obj->content_srl = $document_srl;
 				// 기록된 글의 sequence번호를 기록
-				$args->memory_srl = $memory_srl;
+				$memorizeLog_obj->memory_srl = $memory_srl;
 				// 로그 기록 형식을 수정사항으로 기록
-				$args->code = $this->memorize_code['update'];
+				$memorizeLog_obj->code = $this->memorize_code['update'];
 				// 비교 결과 값이 다른 컬럼을 정리한다.
-				$args->diff_column = serialize($is_diff);
+				$memorizeLog_obj->diff_column = serialize($is_memorize_diff);
 
 				// 수정시 로그를 기록합니다.
-				$this->insertMemorizeLog($args);
+				$this->insertMemorizeLog($memorizeLog_obj);
 			}
 		}
 
@@ -410,19 +411,20 @@
 			$module_srl = $module_info->module_srl;
 
 			$oDocumentModel = &getModel('document');
+			$oFileModel = &getModel('file');
 			$oMemorizeModel = &getModel('memorize');
 
 			// 모듈 설정을 가져옵니다.
-			$memorize_config = $oMemorizeModel->getMemorizeConfig($module, $module_srl);
+			$memorizeConfig = $oMemorizeModel->getMemorizeConfig($module, $module_srl);
 
-			if($memorize_config->block_del_document == 'Y')
+			if($memorizeConfig->block_del_document == 'Y')
 			{
 				$oCommentModel = &getModel('comment');
 				$child = $oCommentModel->getCommentCount($document_srl);
 				if($child>0) return new Object(-1, 'block_del_document');
 			}
 
-			if($memorize_config->use_delete_document != 'Y')
+			if($memorizeConfig->use_delete_document != 'Y')
 			{
 				return;
 			}
@@ -431,29 +433,147 @@
 			$oldDocument = $oDocument->variables;
 
 			//저장할 변수처리
-			$args->type = $this->memorize_type['document'];
-
-			$args->idx = $oMemorizeModel->getMemorizeLastIdx($document_srl);
-			$args->module_srl = $module_srl;
-			$args->content_srl = $document_srl;
-			$args->parent_srl = $module_srl;
-			$args->content1 = $oldDocument['title'];
-			$args->content2 = $oldDocument['content'];
+			$memorizeData_obj->type = $this->memorize_type['document'];
+			$memorizeData_obj->idx = $oMemorizeModel->getMemorizeLastIdx($document_srl);
+			$memorizeData_obj->module_srl = $module_srl;
+			$memorizeData_obj->content_srl = $document_srl;
+			$memorizeData_obj->parent_srl = $module_srl;
+			$memorizeData_obj->content1 = $oldDocument['title'];
+			$memorizeData_obj->content2 = $oldDocument['content'];
 
 			// extra_vars는 데이터 타입이 text이기 때문에 bigtext 타입의 본문은 제거 합니다.
 			unset($oldDocument['content']);
-			$args->extra_vars = serialize($oldDocument);
+			$memorizeData_obj->extra_vars = serialize($oldDocument);
 
-			$oMemorizeDatas = $this->insertMemorizeDatas($args);
-			$memory_srl = $oMemorizeDatas->variables['memory_srl'];
+			$memorizeData_output = $this->insertMemorizeDatas($memorizeData_obj);
+			$memory_srl = $memorizeData_output->variables['memory_srl'];
 
+			/*
+			 * extra_lang
+			*/
+			// 확장변수 중 언어별 타이틀(-1)과 본문(-2)을 가져온다.
+			$document_lang_obj->document_srl = $document_srl;
+			$document_lang_obj->var_idx = array(-1, -2);
+			$document_lang_output = $oMemorizeModel->getMemorizeWithDocumentExtraVars($document_lang_obj);
+			unset($document_lang_obj);
+
+			/*
+			 * xe_document_extra_vars 언어별
+			*/
+			foreach($document_lang_output as $val)
+			{
+				//저장할 변수처리
+				$memorizeData_obj->type = $this->memorize_type['lang'];
+				$memorizeData_obj->idx = $oMemorizeModel->getMemorizeLastIdx($document_srl);
+				$memorizeData_obj->module_srl = $module_srl;
+				$memorizeData_obj->content_srl = $document_srl;
+				$memorizeData_obj->parent_srl = $memory_srl;
+				$memorizeData_obj->content1 = $val->value;
+				$memorizeData_obj->content2 = $val->var_idx;
+	
+				// extra_vars는 데이터 타입이 text이기 때문에 bigtext 타입의 본문은 제거 합니다.
+				unset($val->value);
+				$memorizeData_obj->extra_vars = serialize($val);
+	
+				$this->insertMemorizeDatas($memorizeData_obj);
+			}
+
+			/*
+			 * extra_var
+			*/
+			// 확장변수 중 언어별 타이틀(-1)과 본문(-2)을 가져온다.
+			$document_extra_var_obj->document_srl = $document_srl;
+			$document_extra_var_obj->not_var_idx = array(-1, -2);
+			$document_extra_var_output = $oMemorizeModel->getMemorizeWithDocumentExtraVars($document_extra_var_obj);
+			unset($document_extra_var_obj);
+
+			/*
+			 * xe_document_extra_vars
+			*/
+			foreach($document_extra_var_output as $val)
+			{
+				//저장할 변수처리
+				$memorizeData_obj->type = $this->memorize_type['extra_var'];
+				$memorizeData_obj->idx = $oMemorizeModel->getMemorizeLastIdx($document_srl);
+				$memorizeData_obj->module_srl = $module_srl;
+				$memorizeData_obj->content_srl = $document_srl;
+				$memorizeData_obj->parent_srl = $memory_srl;
+				$memorizeData_obj->content1 = $val->value;
+				$memorizeData_obj->content2 = $val->var_idx;
+	
+				// extra_vars는 데이터 타입이 text이기 때문에 bigtext 타입의 본문은 제거 합니다.
+				unset($val->value);
+				$memorizeData_obj->extra_vars = serialize($val);
+	
+				$this->insertMemorizeDatas($memorizeData_obj);
+			}
+
+			/*
+			 * xe_files
+			*/
+			$file_output = $oFileModel->getFiles($document_srl);
+
+			foreach($file_output as $val)
+			{
+				//★ triggerDeleteFile()를 활용해야함
+			}
+
+			// 로그 기록에 필요한 정보
+			$memorizeLog_obj->module_srl = $module_srl;
+			$memorizeLog_obj->content_srl = $document_srl;
 			// 기록된 글의 sequence번호를 기록
-			$args->memory_srl = $memory_srl;
+			$memorizeLog_obj->memory_srl = $memory_srl;
 			// 로그 기록 형식을 수정사항으로 기록
-			$args->code = $this->memorize_code['delete'];
+			$memorizeLog_obj->code = $this->memorize_code['delete'];
 
 			// 수정시 로그를 기록합니다.
-			$this->insertMemorizeLog($args);
+			$this->insertMemorizeLog($memorizeLog_obj);
+
+			/*
+			 * comment
+			*/
+			$comment_obj->document_srl = $document_srl;
+			$comment_output = $oMemorizeModel->getMemorizeWithCommentLists($comment_obj);
+			unset($comment_obj);
+
+			/*
+			 * comment list
+			*/
+			foreach($comment_output as $val)
+			{
+				//저장할 변수처리
+				$memorizeData_obj->type = $this->memorize_type['comment'];
+				$memorizeData_obj->idx = $oMemorizeModel->getMemorizeLastIdx($val->comment_srl);
+				$memorizeData_obj->module_srl = $module_srl;
+				$memorizeData_obj->content_srl = $val->comment_srl;
+				$memorizeData_obj->parent_srl = $memory_srl;
+				$memorizeData_obj->content1 = $val->content;
+	
+				// extra_vars는 데이터 타입이 text이기 때문에 bigtext 타입의 본문은 제거 합니다.
+				unset($val->content);
+				$memorizeData_obj->extra_vars = serialize($val);
+	
+				$this->insertMemorizeDatas($memorizeData_obj);
+				
+				// 로그 기록에 필요한 정보
+				$memorizeLog_obj->module_srl = $module_srl;
+				$memorizeLog_obj->content_srl = $val->comment_srl;
+				// 기록된 글의 sequence번호를 기록
+				$memorizeLog_obj->memory_srl = $memory_srl;
+				// 로그 기록 형식을 수정사항으로 기록
+				$memorizeLog_obj->code = $this->memorize_code['delete'];
+		
+				// 수정시 로그를 기록합니다.
+				$this->insertMemorizeLog($memorizeLog_obj);
+				
+				// 파일삭제
+				$file_output = $oFileModel->getFiles($val->comment_srl);
+				
+				foreach($file_output as $val)
+				{
+					//★ triggerDeleteFile()를 활용해야함
+				}
+			}
 		}
 
 		/**

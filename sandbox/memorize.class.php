@@ -10,7 +10,7 @@
 
 	{
 
-		var $memorize_type = array('document' => 01, 'comment' => 02, 'extra_vars' => 03, 'lang' => 04, 'file' => 05, 'page' => 06, 'layout' => 07, 'member' => 08);
+		var $memorize_type = array('document' => 01, 'comment' => 02, 'extra_var' => 03, 'lang' => 04, 'file' => 05, 'page' => 06, 'layout' => 07, 'member' => 08);
 		var $memorize_code = array('update' => 1, 'delete' => 2, 'move' => 3, 'copy' => 4);
 
 		/**
