@@ -1,0 +1,39 @@
+<query id="getMemorizeWithCommentLists" action="select">
+    <tables>
+        <table name="comments" alias="comments" />
+        <table name="comments_list" alias="comments_list" />
+    </tables>
+    <columns>
+        <column name="comments.comment_srl" alias="comment_srl" />
+        <column name="comments.module_srl" alias="module_srl" />
+        <column name="comments.document_srl" alias="module_srl" />
+        <column name="comments.parent_srl" alias="module_srl" />
+        <column name="comments.is_secret" alias="comment_srl" />
+        <column name="comments.content" alias="module_srl" />
+        <column name="comments.voted_count" alias="module_srl" />
+        <column name="comments.blamed_count" alias="module_srl" />
+        <column name="comments.notify_message" alias="comment_srl" />
+        <column name="comments.password" alias="module_srl" />
+        <column name="comments.user_id" alias="module_srl" />
+        <column name="comments.user_name" alias="module_srl" />
+        <column name="comments.nick_name" alias="comment_srl" />
+        <column name="comments.member_srl" alias="module_srl" />
+        <column name="comments.email_address" alias="module_srl" />
+        <column name="comments.homepage" alias="module_srl" />
+        <column name="comments.uploaded_count" alias="module_srl" />
+        <column name="comments.regdate" alias="module_srl" />
+        <column name="comments.last_update" alias="module_srl" />
+        <column name="comments.ipaddress" alias="module_srl" />
+        <column name="comments.list_order" alias="module_srl" />
+        <column name="comments.status" alias="module_srl" />
+        <column name="comments_list.depth" alias="depth" />
+    </columns>
+    <conditions>
+        <condition operation="equal" column="comments.comment_srl" var="comments_list.comment_srl" filter="number" pipe="where" />
+		<condition operation="equal" column="comments.comment_srl" var="comment_srl" filter="number" pipe="and" />
+		<condition operation="equal" column="comments.module_srl" var="module_srl" filter="number" pipe="and" />
+		<condition operation="equal" column="comments.document_srl" var="document_srl" filter="number" pipe="and" />
+        <condition operation="equal" column="comments.parent_srl" var="parent_srl" filter="number" pipe="and" />
+        <condition operation="equal" column="comments_list.depth" var="depth" filter="number" pipe="and" />
+    </conditions>
+</query>
