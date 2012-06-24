@@ -13,9 +13,11 @@
 		 **/
 		function init()
 		{
-			// 템플릿 경로 지정
-			$this->setTemplatePath($this->module_path.'tpl');$oModuleModel = &getModel('module');
+			$oModuleModel = &getModel('module');
 			$this->module_info = $oModuleModel->getModuleConfig('memorize');
+
+			// 템플릿 경로 지정
+			$this->setTemplatePath($this->module_path.'tpl');
 		}
 
 		/**
