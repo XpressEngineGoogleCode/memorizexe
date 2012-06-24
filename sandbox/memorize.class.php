@@ -36,7 +36,17 @@
 		{
 			//나중에 삭제합시다.
 			$oModuleModel = &getModel('module');
-			if(!$oModuleModel->getTrigger('comment.updateComment', 'memorize', 'controller', 'triggerUpdateComment', 'before')) return true;
+
+			if(!$oModuleModel->getTrigger('comment.updateComment', 'memorize', 'controller', 'triggerUpdateComment', 'before'))
+			{
+				return true;
+			}
+
+			if(!$oModuleModel->getTrigger('document.deleteDocument', 'memorize', 'controller', 'triggerDeleteDocument', 'before'))
+			{
+				return true;
+			}
+
 			return false;
 		}
 
@@ -48,7 +58,16 @@
 			//나중에 삭제합시다.
 			$oModuleModel = &getModel('module');
 			$oModuleController = &getController('module');
-			if(!$oModuleModel->getTrigger('comment.updateComment', 'memorize', 'controller', 'triggerUpdateComment', 'before')) $oModuleController->insertTrigger('comment.updateComment', 'memorize', 'controller', 'triggerUpdateComment', 'before');
+
+			if(!$oModuleModel->getTrigger('comment.updateComment', 'memorize', 'controller', 'triggerUpdateComment', 'before'))
+			{
+				$oModuleController->insertTrigger('comment.updateComment', 'memorize', 'controller', 'triggerUpdateComment', 'before');
+			}
+			
+			if(!$oModuleModel->getTrigger('document.deleteDocument', 'memorize', 'controller', 'triggerDeleteDocument', 'before'))
+			{
+				$oModuleController->insertTrigger('document.deleteDocument', 'memorize', 'controller', 'triggerDeleteDocument', 'before');
+			}
 		}
 
 		/**

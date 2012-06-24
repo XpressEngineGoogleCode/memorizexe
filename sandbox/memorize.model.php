@@ -74,7 +74,7 @@
 
 		function getMemorizeWithDocumentExtraVars($args = NULL)
 		{
-			if($args == NULL)
+			if($content_srl == NULL)
 			{
 				return false;
 			}
@@ -88,6 +88,44 @@
 			if(!$output->data)
 			{
 				$output->data = array();
+			}
+
+			return $output->data;
+		}
+
+		function getCommentParentSrl($comment_srl = NULL)
+		{
+			if($args == NULL)
+			{
+				return false;
+			}
+
+			$args->parent_srl = $comment_srl;
+			$output = executeQueryArray('memorize.getCommentParentSrl', $args);
+			if(!$output->toBool())
+			{
+				return new Object(-1, "msg_error_occured");
+			}
+
+			if(!$output->data)
+			{
+				$output->data = array();
+			}
+
+			return $output->data;
+		}
+
+		function getCommentListItem($args = NULL)
+		{
+			if($args == NULL)
+			{
+				return false;
+			}
+
+			$output = executeQuery('comment.getCommentListItem', $args);
+			if(!$output->toBool())
+			{
+				return new Object(-1, "msg_error_occured");
 			}
 
 			return $output->data;
