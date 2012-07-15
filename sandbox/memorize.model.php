@@ -74,7 +74,7 @@
 
 		function getMemorizeWithDocumentExtraVars($args = NULL)
 		{
-			if($content_srl == NULL)
+			if($args == NULL)
 			{
 				return false;
 			}
