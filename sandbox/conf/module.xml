@@ -18,6 +18,10 @@
 		<action name="triggerDeleteComment" type="controller" standalone="true" />
 		<action name="triggerDeleteFile" type="controller" standalone="true" />
 		<action name="triggerDisplay" type="controller" standalone="true" />
+		<action name="triggerUpdateCodeLayout" type="controller" standalone="true" />
+		<action name="triggerLayoutDelete" type="controller" standalone="true" />
+		<action name="triggerPageInsertContent" type="controller" standalone="true" />
+		<action name="triggerPageDelete" type="controller" standalone="true" />
 	</actions>
 	<menus>
 		<menu name="memorize" type="all">
